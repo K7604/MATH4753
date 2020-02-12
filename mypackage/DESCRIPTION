@@ -1,0 +1,10 @@
+Package: mypackage
+Type: Package
+Title: General Package
+Version: 0.1.0
+Author: Hoa Hoang
+Maintainer: Hoa Hoang <hoa.hoang-1@ou.edu>
+Description: Contain generic function that use a lot in MATH4753OU
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
