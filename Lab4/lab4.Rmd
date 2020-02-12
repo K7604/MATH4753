@@ -1,0 +1,296 @@
+---
+title: "Untitled"
+author: "Hoa Hoang"
+date: "2/6/2020"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Task 1
+```{r}
+getwd()
+```
+
+## Task 2
+```{r}
+spruce.df=read.csv("SPRUCE.csv")
+tail(spruce.df,6)
+```
+
+## Task 3
+
+### o Load the library s20x and make a lowess smoother scatter plot (Height Vs BHDiameter) using trendscatter() (use f=0.5) record the plot.
+```{r}
+library(s20x)
+with(spruce.df,trendscatter(Height ~ BHDiameter , f=0.5, main = "f=0.5"))
+```
+
+### o	Make a linear model object, spruce.lm=with(spruce.df,lm(Height~BHDiameter)) 
+```{r}
+spruce.lm=with(spruce.df,lm(Height~BHDiameter)) 
+```
+
+### o	Find the residuals using residuals(), put them into an object called height.res
+```{r}
+height.res=residuals(spruce.lm)
+```
+
+### o	Find the fitted values using fitted() and place them in an object called height.fit.
+```{r}
+height.fit=fitted(spruce.lm)
+```
+
+### o	Plot the residuals vs fitted values
+```{r}
+plot(height.fit,height.res)
+```
+
+### o	Plot the residuals vs fitted values using trendscatter()
+```{r}
+trendscatter(height.fit,height.res)
+```
+
+### o	What shape is seen in the plot? Compare it with the curve made with the trendscatter function (second line after Task3)
+  > It is a curve. They look very similar with the curve-ness
+  
+### o	Using the plot() function and spruce.lm, make the residual plot.
+```{r}
+plot(spruce.lm, which =1)
+```
+
+### o	Check normality using the s20x function normcheck(). Please note that you may need to add an additional option to show the Shapiro-Wilk test (use ?normcheck )
+```{r}
+normcheck(spruce.lm,shapiro.wilk = TRUE)
+```
+
+### o	What is the pvalue for the Shapiro-Wilk test? What is the NULL hypothesis in this case?
+  > P = 0.29, Cannot reject the hypothesis, population is normal
+  
+### 	y_i=β_0+β_1 x_i+ϵ_(i,)  ϵ_i∼N(0,σ^2) describes the model used above. Notice that the residuals r_i estimate the model errors ϵ_i. If the model works well with the data we should expect that the residuals are approximately Normal in distribution with mean 0 and constant variance.
+
+### o	Write a sentence outlining your conclusions concerning the validity of applying the straight line to this data set.
+  > The straight line is not a very good model for the given data
+  
+## Task 4
+### o	Fit a quadratic to the points using the appropriate formula inside the lm() function and placing the output in the object quad.lm.
+```{r}
+quad.lm=lm(Height~BHDiameter + I(BHDiameter^2),data=spruce.df)
+
+```
+
+### o	Make a fresh scatter plot of Height Vs BHDiameter and add the quadratic curve to it.
+```{r}
+plot(Height~BHDiameter,bg="Blue",pch=21,cex=1.2,
+ylim=c(0,max(Height)),xlim=c(0,max(BHDiameter)), 
+main="Spruce height prediction",data=spruce.df)
+
+myplot=function(x){
+ quad.lm$coef[1] +quad.lm$coef[2]*x  + quad.lm$coef[3]*x^2
+} 
+curve(myplot, lwd=2, col="steelblue",add=TRUE)
+```
+
+### o	Make quad.fit, a vector of fitted values.
+
+```{r}
+## For what
+quad.fit=fitted(quad.lm)
+```
+
+### o	Make a plot of the residuals vs fitted values, use plot() and quad.lm
+```{r}
+plot(quad.lm, which =1)
+```
+
+### o	Construct a QQ plot using normcheck() 
+```{r}
+normcheck(quad.lm,shapiro.wilk = TRUE)
+```
+
+### o	What is the value of the p-value in the Shapiro-Wilk test? What do you conclude
+  >0.684, Cannot reject the hypothesis, population is normal
+
+## Task 5
+```{r}
+summary(quad.lm)
+```
+###	What is the value of (β_0 ) ̂?
+  >0.860896
+  
+###	What is the value of (β_1 ) ̂
+  >1.469592
+  
+###	What is the value of (β_2 ) ̂
+  >0.027457
+  
+###	Make interval estimates for β_0,β_1,β_2.
+```{r}
+ciReg(quad.lm)
+```
+
+###	Write down the equation of the fitted line.
+  > y= 0.860896+ 1.469592x - 0.027457x^2}
+  > y is Height and x is BHDiameter
+  
+###	Predict the Height of spruce when the Diameter is 15, 18 and 20cm (use predict())
+```{r}
+predict(quad.lm, data.frame(BHDiameter=c(15,18,20)))
+```
+
+###	Compare with the previous predictions.
+  > They are very close
+  
+###	What is the value of multiple R^2? Compare it with the previous model. 
+  > 0.7741. This is better fit than the previous, 0.66
+
+###	Make use of adjusted R squared to compare models to determine which is “better”. Use the web to learn about adjusted R squared.
+###	What does  ( multiple R^2) mean in this case? 
+  > 0.77 means 77% data fit.
+  
+###	Which model explains the most variability in the Height?
+  > The previous straight line model have more variablity, This quad model is more consistence
+  
+###	Use anova() and compare the two models. Paste anova output here and give your conclusion underneath.
+```{r}
+anova(spruce.lm,quad.lm)
+```
+  > The RSS is much lower on the quad thus making it the better one
+  
+###	Find TSS, record it here
+```{r}
+height.qfit=fitted(quad.lm)
+TSS = with(spruce.df, sum((Height-mean(Height))^2))
+TSS
+
+```
+
+###	Find MSS, record it here
+```{r}
+MSS = with(spruce.df, sum((height.qfit-mean(Height))^2))
+MSS
+```
+
+###	Find RSS, record it here
+```{r}
+RSS=with(spruce.df, sum((Height-height.qfit)^2))
+RSS
+```
+
+###	What is the value of MSS/TSS?
+```{r}
+MSS/TSS
+```
+
+## Task 6
+### Investigate unusual points by making a cooks plot using cooks20x(). Place the plot here.
+```{r}
+cooks20x(quad.lm)
+```
+
+### Use the web to find out what cooks distance is and how it is used – write a couple of sentences here.
+  > "Cook’s distance is the scaled change in fitted values, which is useful for identifying outliers in the X values (observations for predictor variables). Cook’s distance shows the influence of each observation on the fitted response values. An observation with Cook’s distance larger than three times the mean Cook’s distance might be an outlier."
+  https://www.mathworks.com/help/stats/cooks-distance.html
+  
+###	What does cooks distance for the quadratic model and data tell you?
+  > 24, 18, 21 having alot of more influence. These value are important for predictive modeling
+  
+###	Make a new object called quad2.lm which is made from the same quadratic model using the data with the datum which has highest cooks distance removed.
+```{r}
+quad2.lm=lm(Height~BHDiameter + I(BHDiameter^2) , data=spruce.df[-24,])
+```
+
+###	Summarize the new object here.
+```{r}
+summary(quad2.lm)
+```
+
+###	Compare with the summary information from quad.lm
+```{r}
+summary(quad.lm)
+```
+
+### What do you conclude?
+  > The model quad2.lm fit better for all other value
+
+## Task 7
+### Prove using latex that y=β_0+β_1 x+β_2 (x-x_k )I(x>x_k) where I() is 1 when x>x_k and 0 else.
+
+Let $l_1$ and $l_2$ have the point $x_k$ in common
+$$l_1 : y = \beta_0 + \beta_1x \\ 
+l_2 : y = \beta_0 + \delta + (\beta_1 + \beta_2)x $$
+
+Plug the point $x_k$ and set the two equation equal to each other
+$$y_k =\beta_0 + \beta_1x_k = \beta_0 + \delta + (\beta_1 + \beta_2)x_k$$
+Distribute $x_k$ on the right hand
+$$\beta_0 + \beta_1x_k = \beta_0 + \delta + \beta_1x_k + \beta_2x_k$$
+Subtract $\beta_0$ and $\beta_1x_k$
+$$ 0 = \delta + \beta_2x_k$$
+Then
+$$ \delta  = \beta_2x_k$$
+Subtitue $ \delta  = \beta_2x_k$ back to $l_2$ for any x and distribute x
+$$ l_2 : y - \beta_0 - \beta_2x_k + \beta_1x + \beta_2x$$
+Factor out $B_2$
+$$ l_2 : y = \beta_0  + \beta_1x + \beta_2(x-x_k)$$
+We can see that $l_2$ is an adjusment of $l_1$
+Then we can use indicator function to know where we can and can't include the adjustment
+$$ y = \beta_0  + \beta_1x + \beta_2(x-x_k)I(x>x_k)$$
+Where I() = 1 if $x > x_k$ and = 0 else
+
+
+### Reproduce the above plot using the code included in the R script (x_k=18)  , you may need to change some of the parameter values.
+```{r}
+sp2.df=within(spruce.df, X<-(BHDiameter-18)*(BHDiameter>18))
+
+lmp=lm(Height~BHDiameter + X,data=sp2.df)
+tmp=summary(lmp)
+names(tmp)
+
+myf = function(x,coef){
+  coef[1]+coef[2]*(x) + coef[3]*(x-18)*(x-18>0)
+}
+
+plot(spruce.df,main="Piecewise regression")
+myf(0, coef=tmp$coefficients[,"Estimate"])
+curve(myf(x,coef=tmp$coefficients[,"Estimate"] ),add=TRUE, lwd=2,col="Blue")
+abline(v=18)
+text(18,16,paste("R sq.=",round(tmp$r.squared,4) ))
+
+```
+  
+
+## Task 8
+### Please install the following packages. You may use the single function: install.packages(c("devtools", "roxygen2", "testthat", "knitr"))
+### Follow the demonstration here: https://youtu.be/DWkIbk_HE9o or that given by me.
+### Add one function to your package from the labs we have done so far (Labs 1-4). Make sure it is documented. This is VERY important – learn about how to do this with roxygen – see http://r-pkgs.had.co.nz/man.html#man 
+### Every lab you will add a function to this package.
+### In an RMD chunk, load your package using library()
+```{r}
+library(mypackage)
+```
+### Use your function so that I can see the output.
+```{r}
+createlayouts(1,4,2,2)
+with(spruce.df,trendscatter(Height ~ BHDiameter , f=0.5, main = "f=0.5"))
+with(spruce.df,trendscatter(Height ~ BHDiameter , f=0.5, main = "f=0.6"))
+with(spruce.df,trendscatter(Height ~ BHDiameter , f=0.5, main = "f=0.7"))
+with(spruce.df,trendscatter(Height ~ BHDiameter , f=0.5, main = "f=0.8"))
+```
+
+### Explain in a couple of sentences what the function does.
+
+  > My function create simple layout for graphs. It takes 4 value to specify the format.
+The firest 2 values are the number of layout (e.g. 1, 4 for 1 to 4) followed by # of row and # of column
+
+
+
+
+
+
+

@@ -1,0 +1,182 @@
+---
+title: "Lab5"
+author: "Hoa Hoang"
+date: "2/12/2020"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+## Task 1
+```{r}
+getwd()
+```
+
+## Task 2
+### Simulate a binomial experiment where n=10,p=0.7, and Y=number of successes.
+```{r}
+mybin=function(iter,n, p, flag=FALSE){ 
+  sam.mat=matrix(NA,nr=n,nc=iter, byrow=TRUE)
+  succ=c()
+  for( i in 1:iter){
+    sam.mat[,i]=sample(c(1,0),n,replace=TRUE, prob=c(p,1-p))
+    succ[i]=sum(sam.mat[,i])
+  }
+  succ.tab=table(factor(succ,levels=0:n))
+  if(flag==TRUE){
+    print(succ.tab)
+  }
+  barplot(succ.tab/(iter), col=rainbow(n+1), main="Binomial simulation", xlab="Number of successes")
+  print(succ.tab/iter)
+}
+```
+
+
+###	Record the plots for each of the following (Use color)
+```{r}
+mybin(100,10,0.7)
+mybin(200,10,0.7)
+mybin(500,10,0.7)
+mybin(1000,10,0.7)
+```
+
+### For the last simulation (10,000 iterations) copy and paste the table that is produced from the function.
+```{r}
+mybin(10000,10,0.7,TRUE) 
+```
+### Verify that each value in the table is approximately correct using dbinom() – you will need to look up the function using ?dbinom
+```{r}
+dbinom(1:10,10,0.7)
+```
+  > Yes, approximately correct
+
+## Task 3
+### Suppose that there is a bag of 20 marbles, 12 white (“1”) and 8 black “0”. Create a sample of size n=5 without replacement
+```{r}
+sample(c("0","0","0","0","0","0","0","0",
+         "1","1","1","1","1","1","1","1","1","1","1","1")
+       ,size=5)
+```
+
+### Now do the same with replace=TRUE.
+```{r}
+sample(c("0","1"),size=5,replace=TRUE)
+```
+
+###	Use the function myhyper(), on CANVAS, assume Y = number of whites, remember sampling is without replacement, n=5. 
+```{r}
+myhyper=function(iter=100,N=20,r=12,n=5,flag=FALSE){
+# make a matrix to hold the samples
+#initially filled with NA's
+sam.mat=matrix(NA,nr=n,nc=iter, byrow=TRUE)
+#Make a vector to hold the number of successes over the trials
+succ=c()
+for( i in 1:iter){
+#Fill each column with a new sample
+sam.mat[,i]=sample(rep(c(1,0),c(r,N-r)),n,replace=FALSE)
+#Calculate a statistic from the sample (this case it is the sum)
+succ[i]=sum(sam.mat[,i])
+}
+
+#Make a table of successes
+succ.tab=table(factor(succ,levels=0:n))
+if(flag==TRUE){
+  print(succ.tab)
+}
+#Make a barplot of the proportions
+barplot(succ.tab/(iter), col=rainbow(n+1), main="HYPERGEOMETRIC simulation", xlab="Number of successes")
+succ.tab/iter
+}
+
+```
+### Use this code to make barplots of Y for the following number of iterations
+```{r}
+myhyper()
+myhyper(iter=200)
+myhyper(iter=500)
+myhyper(iter=1000)
+```
+
+### For the last simulation (10,000 iterations) copy and paste the table that is produced from the function.
+```{r}
+myhyper(iter=10000,flag=TRUE)
+```
+
+### Verify that each value in the table is approximately correct using dhyper()
+```{r}
+dhyper(x=0:5, m=12, n=8, k=5)
+```
+  > Values are very close
+  
+## Task 4
+### In lab5.r there is a function called mysample(). Look at the code and describe what you think it should do – record your response here.
+```{r}
+mysample=function(n, iter=10,time=0.5){
+  for( i in 1:iter){
+    #make a sample
+    s=sample(1:10,n,replace=TRUE)
+    # turn the sample into a factor
+    sf=factor(s,levels=1:10)
+    #make a barplot
+    barplot(table(sf)/n,beside=TRUE,col=rainbow(10), 
+    main=paste("Example sample()", " iteration ", i, " n= ", n,sep="") ,
+    ylim=c(0,0.2))
+    #release the table
+    ##Sys.sleep(time)
+  }
+}
+```
+  >This function is making samplings between number 1 to 10. number of iterration is depending on the user input.
+  >Then it make a graph out of the probability of the numbers. The graph y axis is limited between 0 and 0.2
+  
+### Run the function with the following arguments mysample(n=1000, iter=30,time=1)
+```{r}
+  mysample(n=1000, iter=30,time=1)
+```
+
+###	Describe what you see here.
+  > I see 30 iterations of samplings between number 1 to 10, portray with thier probability of appearance
+  
+## Task 5
+###	Use R to calculate 
+#### 8 choose 4	
+```{r}
+choose(8,4)
+```
+
+#### P(Y>4),Y~Pois(λ=2)
+```{r}
+ppois(4,2,lower.tail = FALSE)
+```
+
+###	Some more calculations in R
+####	P(Y=10),Y~NegBin(p=0.4,r=3) see CANVAS which has a full explanation of this.
+
+```{r}
+#  This means that in R we need n=3 (size), x=y-r=10-3=7
+dnbinom(7,3,0.4)  # Nu Failures, Nu of successes, prob success
+mynbin=function(y,r,p){
+  choose(y-1,r-1)*p^r*(1-p)^(y-r)
+}
+mynbin(10,3,0.4)
+```
+
+####	P(Y≤8),Y~Bin(n=15,p=0.4)
+```{r}
+  pbinom(8,15,0.4)
+```
+
+## Task 6
+### Create an R function by copying code from this lab. 
+### Document the function using roxygen
+### Place the function into your package
+### Install and restart the package using the icon in R studio 
+### Invoke the function by doing the following – suppose your function is called myf()
+```{r}
+mypackage::mybin(50,5,0.5)
+```
+
+
+
+
