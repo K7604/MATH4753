@@ -1,0 +1,13 @@
+Package: MATH4753PROJ1
+Type: Package
+Title: Introductory package
+Version: 0.1.0
+Author: Hoa Hoang
+Maintainer: Hoa Hoang <hoa.hoang-1@ou.edu>
+Description: This is a test 
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.2
+URL: https://github.com/K7604/MATH4753PROJ1
+BugReports: https://github.com/K7604/MATH4753PROJ1/issues

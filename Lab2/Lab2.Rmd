@@ -1,0 +1,91 @@
+---
+title: "Lab2"
+author: "Hoa Hoang"
+date: "1/24/2020"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Task 1
+```{r}
+getwd()
+```
+
+## Task 2
+```{r}
+file=read.csv("EPAGAS.csv")
+head(file,6)
+```
+## Task 3
+### Make the object mpg, the number of miles per gallon vector
+```{r}
+mpg.df=file
+mpg = mpg.df$MPG
+```
+
+### Transform  the  mpg  variable  to  z
+```{r}
+z=(mpg-mean(mpg))/sd(mpg)
+z
+```
+
+### Mean of z = 0
+```{r}
+round(mean(z))
+```
+
+### Variance of z = 1
+```{r}
+sd(z)^2
+```
+
+### Possible outliners
+```{r}
+z[abs(z)>=2 & abs(z)<=3]
+```
+
+### Outliners
+```{r}
+z[abs(z)>3]
+```
+
+### dotplot
+```{r}
+library (lattice)
+mycol = ifelse(abs(z)>3, "Red",
+        ifelse(abs(z)>=2 &abs(z)<=3,"Blue", "Black"))  
+dotplot(z,col=mycol)
+```
+
+## Task 4
+### Boxplot (black, notch, title, horizontal)
+```{r}
+boxplot(z,main="Mile per Gallon",horizontal=TRUE,col="BLACK",notch=TRUE)
+```
+
+### Using Chebyshev’s theorem predict the proportion of data within 2 standard deviations of the mean of the mpg data
+1-1/4 = 3/4
+
+### Exact proportion within 2 standard deviation of the mean
+```{r}
+round(length(mpg[abs(z)<2])/length(mpg),4)
+```
+### Does Chebyshev agree with the data?
+Yes, 3/4 means 75%. We have more than 75% of the data within the interval
+
+### Now use the empirical rule, what proportion (according to the rule) of the data should be within 2 standard deviations of the mean?
+Empirical rule states that about 95% of the distribution is in the inverval
+
+### How well does it correspond?
+We have 96%
+
+### Is the Empirical rule valid in this case? Why?
+I would say it is valid as empirical is an estimation and 96% is very-very close to 95%
+
+

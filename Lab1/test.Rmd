@@ -1,0 +1,148 @@
+---
+title: "Lab1"
+author: "Hoa Hoang"
+date: 1/13/2020
+output: 
+  html_document: 
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Task 1
+```{r}
+getwd()
+```
+## Task 2
+```{r}
+ddt <- read.csv("DDT.csv")
+head(ddt,6)
+
+```
+## Task 3
+#### 1. Qualitative variables are RIVERS and SPECIES
+#### 2. Quanlitative variables are MILES, LENGTH, WEIGHT, and DDT
+#### 3. There are 3 species: CCATFISH, SMBUFFALO,and LMBASS
+#### 4.
+```{r}
+  new1 <- subset(ddt, SPECIES =='LMBASS' & WEIGHT >800)
+  new1
+```
+#### 5.
+```{r}
+  new2 <- subset(ddt, RIVER =='SCM' & DDT >4)
+  new2
+```
+## Task 4
+#### Q1: 42.8125
+```{r}
+  mean_LENGTH <-with(ddt,mean(LENGTH))
+  mean_LENGTH
+```
+#### Q2: 376.5461
+```{r}
+  sd_WEIGHT<-with(ddt,sd(WEIGHT))
+  sd_WEIGHT
+```
+#### Q3: NO
+```{r}
+with(ddt,plot(WEIGHT,LENGTH))
+```
+
+#### Q4: The answer is 1
+```{r}
+v<-1:20
+v/20
+```
+## Task 4
+#### Make a table of the rivers.
+```{r}
+  river_table<-with(ddt,table(RIVER))
+  river_table
+```
+
+#### Make a color coded barplot of the rivers.
+```{r}
+  barplot(river_table,col=rainbow(7))
+```
+
+#### Make a table of the rivers crossed with the species of fish.
+```{r}
+  river_n_fish_table <- with(ddt,table(RIVER,SPECIES))
+  river_n_fish_table
+```
+
+#### Make a barplot of the rivers crossed with the species of fish
+```{r}
+  barplot(river_n_fish_table,legend = TRUE, col=rainbow(4))
+```
+
+## Task 5
+#### Make a pie chart of Fish SPECIES
+```{r}
+  species_table<-with(ddt,table(SPECIES))
+  with(ddt,pie(species_table))
+```
+
+#### Make a pie chart of RIVERS
+```{r}
+  with(ddt,pie(river_table))
+```
+
+## Task 6
+#### Make a boxplot of the variable DDT
+```{r}
+  with(ddt,boxplot(DDT))
+```
+
+#### Make a boxplot of the variable WEIGHT
+```{r}
+  with(ddt,boxplot(WEIGHT))
+```
+
+#### Make a boxplot of the variable LENGTH
+```{r}
+  with(ddt,boxplot(LENGTH))
+```
+
+## Task 7 
+#### Make a coplot of LENGTH Vs WEIGHT given RIVER
+```{r}
+  with(ddt,coplot(LENGTH ~ WEIGHT | RIVER))
+```
+
+#### Make a coplot of DDT Vs WEIGHT given SPECIES
+```{r}
+  with(ddt,coplot(DDT ~ WEIGHT | SPECIES))
+```
+
+## Task 8
+#### The box plot
+```{r}
+  library(ggplot2)
+  g <- ggplot(ddt, aes(x=SPECIES, y=WEIGHT,fill = RIVER)) +
+  ggtitle("HOA HOANG")+
+  geom_boxplot()
+  g
+
+```
+
+#### The violin plot
+```{r}
+  g <- ggplot(ddt, aes(x=RIVER, y=LENGTH,fill = SPECIES)) +
+  ggtitle("HOA HOANG")+
+  geom_violin()
+  g
+```
+
+#### The scatter plot
+```{r}
+  g <- ggplot(ddt, aes(x=WEIGHT, y=LENGTH, color = SPECIES)) +
+  ggtitle("HOA HOANG")+
+  geom_point()
+  g
+```
+
