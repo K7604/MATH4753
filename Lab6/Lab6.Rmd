@@ -1,0 +1,310 @@
+---
+title: "Lab6"
+author: "Hoa Hoang"
+date: "2/19/2020"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+## Task 1
+```{r}
+getwd()
+```
+
+## Task 2
+### 4 normal curves
+#### μ=10,σ=4
+#### μ=10,σ=2
+#### μ=5,σ=10
+#### μ=5,σ=1/2
+```{r}
+mypackage::createlayouts(1,4,2,2)
+curve(dnorm(x, mean=10,sd=4),xlim=c(-10,30))
+curve(dnorm(x, mean=10,sd=2),xlim=c(0,20))
+curve(dnorm(x, mean=5,sd=10),xlim=c(-30,40))
+curve(dnorm(x, mean=5,sd=0.5),xlim=c(2,8))
+```
+
+### 4 regions and probabilities (use 4 dec. places)
+#### Y∼N(0,1),P(Y≥2)
+#### Y∼N(μ=4,σ=2),P(1≤Y<5)
+#### Y∼N(μ=10,σ=4),P(Y<10)
+#### Y∼N(μ=-2,σ=1/2),P(-3<Y≤ -2)  
+```{r}
+mypackage::createlayouts(1,4,2,2)
+
+#### Y∼N(0,1),P(Y≥2)
+# Highlight the area
+curve(dnorm(x, mean=0,sd=1),xlim=c(-5,5))
+xcurve=seq(2,4,length=1000)
+ycurve=dnorm(xcurve,mean=0,sd=1)
+polygon(c(2,xcurve,4),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pnorm(2,mean=0,sd=1,lower.tail=FALSE)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=4)
+
+#### Y∼N(μ=4,σ=2),P(1≤Y<5)
+# Highlight the area
+curve(dnorm(x, mean=4,sd=2),xlim=c(-10,20))
+xcurve=seq(1,5,length=1000)
+ycurve=dnorm(xcurve,mean=4,sd=2)
+polygon(c(1,xcurve,5),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pnorm(5,mean=4,sd=2)-pnorm(1,mean=4,sd=2)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=20)
+
+#### Y∼N(μ=10,σ=4),P(Y<10)
+# Highlight the area
+curve(dnorm(x, mean=10,sd=4),xlim=c(-10,30))
+xcurve=seq(-10,10,length=1000)
+ycurve=dnorm(xcurve,mean=10,sd=4)
+polygon(c(-10,xcurve,10),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pnorm(10,mean=10,sd=4)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=30)
+
+#### Y∼N(μ=-2,σ=1/2),P(-3<Y≤ -2)  
+# Highlight the area
+curve(dnorm(x, mean=-2,sd=0.5),xlim=c(-4,0))
+xcurve=seq(-3,-2,length=1000)
+ycurve=dnorm(xcurve,mean=-2,sd=0.5)
+polygon(c(-3,xcurve,-2),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pnorm(-2,mean=-2,sd=0.5)-pnorm(-3,mean=-2,sd=0.5)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=0)
+```
+
+## Task 3
+### 3 gamma plots
+#### Y∼Gamma(shape=1,scale=1) in Red
+#### Y∼Gamma(shape=3,scale=1) in Blue
+#### Y∼Gamma(shape=5,scale=1) in Purple
+```{r}
+curve(dgamma(x,shape=1,scale=1),xlim=c(0,10),ylim=c(0,1),col="Red",lwd=2)
+curve(dgamma(x,shape=3,scale=1),xlim=c(0,10),ylim=c(0,1),add=TRUE, col="Blue",lwd=2)
+curve(dgamma(x,shape=5,scale=1),xlim=c(0,10),ylim=c(0,1),add=TRUE, col="Purple",lwd=2)
+```
+	
+### 3 regions and probabilities
+#### Y~Gamma(shape=3,scale=2),P(2<Y<5)
+#### Y∼Gamma(shape=6,scale=3),P(1≤Y≤4)
+#### Y∼Gamma(shape=2,scale=4),P(3≤Y<6)
+```{r}
+mypackage::createlayouts(1,4,2,2)
+#### Y~Gamma(shape=3,scale=2),P(2<Y<5)
+# Highlight the area
+curve(dgamma(x,shape=3,scale=2),xlim=c(0,20),ylim=c(0,0.2),lwd=2)
+xcurve=seq(2,5,length=1000)
+ycurve=dgamma(xcurve,shape=3,scale=2)
+polygon(c(2,xcurve,5),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pgamma(5,shape=3,scale=2)-pgamma(2,shape=3,scale=2)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=17)
+
+#### Y∼Gamma(shape=6,scale=3),P(1≤Y≤4)
+# Highlight the area
+curve(dgamma(x,shape=6,scale=3),xlim=c(0,40),ylim=c(0,0.1),lwd=2)
+xcurve=seq(1,4,length=1000)
+ycurve=dgamma(xcurve,shape=6,scale=3)
+polygon(c(1,xcurve,4),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pgamma(4,shape=6,scale=3)-pgamma(1,shape=6,scale=3)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=40)
+
+#### Y∼Gamma(shape=2,scale=4),P(3≤Y<6)
+# Highlight the area
+curve(dgamma(x,shape=2,scale=4),xlim=c(0,30),ylim=c(0,0.1),lwd=2)
+xcurve=seq(3,6,length=1000)
+ycurve=dgamma(xcurve,shape=2,scale=4)
+polygon(c(3,xcurve,6),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pgamma(6,shape=2,scale=4)-pgamma(3,shape=2,scale=4)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=30)
+```
+
+## Task 4
+### 4 chi-square plots
+#### Y∼chisq(df=1) in Red
+#### Y∼chisq(df=2) in Blue
+#### Y∼chisq(df=4) in Purple
+#### Y∼chisq(df=20) in Green
+```{r}
+curve(dchisq(x,df=1),xlim=c(0,10),ylim=c(0,1),col="Red",lwd=2,
+ylab="Chisq density", main="df=2,5")
+curve(dchisq(x,df=2),xlim=c(0,10),ylim=c(0,1),col="Blue",lwd=2,add=TRUE)
+curve(dchisq(x,df=4),xlim=c(0,10),ylim=c(0,1),col="Purple",lwd=2,add=TRUE)
+curve(dchisq(x,df=20),xlim=c(0,10),ylim=c(0,1),col="Green",lwd=2,add=TRUE)
+```
+
+### 3 regions and probabilities 
+#### Y∼chisq(df=2),P(2≤Y≤4)
+#### Y∼chisq(df=3),P(3≤Y≤5)
+#### Y∼chisq(df=20),P(10<Y≤21) 
+```{r}
+mypackage::createlayouts(1,4,2,2)
+#### Y∼chisq(df=2),P(2≤Y≤4)
+# Highlight the area
+curve(dchisq(x,df=2),xlim=c(0,10),ylim=c(0,0.6),col="Blue",lwd=2)
+xcurve=seq(2,4,length=1000)
+ycurve=dchisq(xcurve,df=2)
+polygon(c(2,xcurve,4),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pchisq(4,df=2)-pchisq(2,df=2)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=10)
+
+#### Y∼chisq(df=3),P(3≤Y≤5)
+# Highlight the area
+curve(dchisq(x,df=3),xlim=c(0,10),ylim=c(0,0.4),col="Blue",lwd=2)
+xcurve=seq(3,5,length=1000)
+ycurve=dchisq(xcurve,df=3)
+polygon(c(3,xcurve,5),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pchisq(5,df=3)-pchisq(2,df=3)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=10)
+
+#### Y∼chisq(df=20),P(10<Y≤21) 
+# Highlight the area
+curve(dchisq(x,df=20),xlim=c(5,40),ylim=c(0,0.2),col="Blue",lwd=2)
+xcurve=seq(10,21,length=1000)
+ycurve=dchisq(xcurve,df=20)
+polygon(c(10,xcurve,21),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pchisq(21,df=20)-pchisq(10,df=20)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=40)
+```
+
+## Task 5
+### 4 random weibull plots
+#### Y∼dweibull(shape=1,scale=1) in Red
+#### Y∼dweibull(shape=2,scale=1) in Blue
+#### Y∼dweibull(shape=3,scale=1) in Purple
+#### Y∼dweibull(shape=4,scale=1) in Green
+```{r}
+curve(dweibull(x,1,1),xlim=c(0,5),ylim=c(0,2),col="Red",lwd=2,ylab="dweibull density")
+curve(dweibull(x,2,1),col="Blue",lwd=2,add=TRUE)
+curve(dweibull(x,3,1),col="Purple",lwd=2,add=TRUE)
+curve(dweibull(x,4,1),col="Green",lwd=2,add=TRUE)
+```
+
+### 3 random weibull regions and probabilities.
+#### Y∼dweibull(shape=1,scale=2) P()
+#### Y∼dweibull(shape=2,scale=2) 
+#### Y∼dweibull(shape=3,scale=2)
+```{r}
+mypackage::createlayouts(1,4,2,2)
+#### Y∼dweibull(shape=1,scale=2) P(2≤Y≤4)
+# Highlight the area
+curve(dweibull(x,1,2),xlim=c(0,5),ylim=c(0,2),col="Red",lwd=2)
+xcurve=seq(2,4,length=1000)
+ycurve=dweibull(xcurve,1,2)
+polygon(c(2,xcurve,4),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pweibull(4,1,2)-pweibull(2,1,2)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=5)
+
+#### Y∼dweibull(shape=2,scale=1) P(1≤Y≤2)
+# Highlight the area
+curve(dweibull(x,2,1),xlim=c(0,5),ylim=c(0,2),col="Red",lwd=2)
+xcurve=seq(1,2,length=1000)
+ycurve=dweibull(xcurve,2,1)
+polygon(c(1,xcurve,2),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pweibull(2,2,1)-pweibull(1,2,1)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=5)
+#### Y∼dweibull(shape=2,scale=1) P(Y≤1)
+# Highlight the area
+curve(dweibull(x,2,1),xlim=c(0,5),ylim=c(0,2),col="Red",lwd=2)
+xcurve=seq(0,1,length=1000)
+ycurve=dweibull(xcurve,2,1)
+polygon(c(0,xcurve,1),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pweibull(1,2,1)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=5)
+```
+
+## Task 6
+### 4 beta plots
+#### Y∼beta(shape1=1,shape2=1) in Red
+#### Y∼beta(shape1=2,shape2=2) in Blue
+#### Y∼beta(shape1=1,shape2=3) in Purple
+#### Y∼beta(shape1=2,shape2=1) in Green
+```{r}
+curve(dbeta(x,1,1), ylab = "Beta Density", col = "Red", ylim=c(0,5))
+curve(dbeta(x,2,2), col = "Blue", add = TRUE)
+curve(dbeta(x,1,3), col = "Purple", add = TRUE)
+curve(dbeta(x,2,1), col = "Green", add = TRUE)
+```
+
+### 3 beta regions and probabilities.
+#### Y∼beta(shape1=2,shape2=2) P(0≤Y≤1)
+#### Y∼beta(shape1=1,shape2=3) P(0.2≤Y≤0.4)
+#### Y∼beta(shape1=2,shape2=1) P(Y≤0.8)
+
+```{r}
+mypackage::createlayouts(1,4,2,2)
+
+#### Y∼beta(shape1=2,shape2=2) P(0≤Y≤1)
+# Highlight the area
+curve(dbeta(x,2,2),ylim=c(0,2),col="Blue",lwd=2)
+xcurve=seq(0,1,length=1000)
+ycurve=dbeta(xcurve,2,2)
+polygon(c(0,xcurve,1),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pbeta(1,2,2)-pbeta(0,2,2)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=1)
+
+#### Y∼beta(shape1=1,shape2=3) P(0.2≤Y≤0.4)
+# Highlight the area
+curve(dbeta(x,1,3),ylim=c(0,3),col="Blue",lwd=2)
+xcurve=seq(0.2,0.4,length=1000)
+ycurve=dbeta(xcurve,1,3)
+polygon(c(0.2,xcurve,0.4),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pbeta(0.4,1,3)-pbeta(0.2,1,3)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=0.8)
+
+#### Y∼beta(shape1=2,shape2=1) P(Y≤0.8)
+# Highlight the area
+curve(dbeta(x,2,1),ylim=c(0,3),col="Blue",lwd=2)
+xcurve=seq(0,0.8,length=1000)
+ycurve=dbeta(xcurve,2,1)
+polygon(c(0,xcurve,0.8),c(0,ycurve,0),col="Red")
+# Calculate the area
+prob=pbeta(0.8,2,1)
+prob=round(prob,4)
+mtext(paste("Area = ", prob, sep=" "), side=1, line=3, at=1)
+```
+
+## Task 7
+```{r}
+##myncurve = function(mu, sigma,a){
+##  curve(dnorm(x,mean=mu,sd=sigma), xlim = c(mu-3*sigma, mu + 3*sigma))
+##  #Shaded Area
+##  xcurve=seq(mu-3*sigma, a, length=1000)
+##  ycurve=dnorm(xcurve,mean=mu,sd=sigma)
+##  polygon(c(mu-3*sigma,xcurve,a),c(0,ycurve,0),col="Red")
+##  # Calculate the area and print it
+##  prob=pnorm(a,mean=mu,sd=sigma)
+##  prob=round(prob,4)
+##  print(paste("Area = ",prob, sep=""))
+##}
+mypackage::myncurve(mu=10,sigma=5, a=6)
+```
+
