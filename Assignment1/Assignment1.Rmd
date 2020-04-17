@@ -1,0 +1,483 @@
+---
+title: "Assignment1"
+author: "Hoa Hoang"
+date: "2/13/2020"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+## Question Completed
+  > 15/15
+  
+## 1. Summarize Grading
+  > 1. 4 Assignment (15%)  
+  2. Labs (10%)  
+    * Possible 15 labs  
+    * Classroom Excercise  
+    * Grade alloted through drop-boxes and rubrics  
+  3. 2 Projects (10%, 1/3 Project 1, 2/3 Project 2)  
+  4. Clicker (10%)  
+  5. Online Quizes (5%)  
+  6. Mid-Terms(20%)  
+  7. Final (30%)  
+  Grade is standard, no curve.  
+  
+## 2. A biologist's fish data
+```{r}
+ddt.df = read.csv("DDT.csv")
+head(ddt.df)
+# m=with(ddt.df, as.numeric((MILE))) # A
+# length(unique(m)) #B
+```
+
+### a. Make the coplot as the biologist required 
+```{r}
+with(ddt.df,coplot(LENGTH ~ WEIGHT | RIVER*SPECIES, col=MILE))
+```
+
+### b. Interpret the lower left three conditional plots.
+  > The three plot show Lenght and Weight of CCATFISH in FCM, LCM, SCM rivers respectiively
+  
+### c. What does line A do?
+  > Line A assign the MILE vector to m, taken from the dataframe
+  
+### d. What does line B do?
+  > Line B display the number of unique for Mile value
+  
+### e. Why are the top six plots empty?
+  > Because there are no LMBASS, SMBUFFLALO in FCM, LCM, SCM rivers
+  
+### f. What is the mean value of DDT found in the sample of CCATFISH caught in the FCM river?
+```{r}
+FCMnCCATFISH = subset(ddt.df,RIVER=="FCM" & SPECIES=="CCATFISH",)
+FCMnCCATFISH
+### The mean
+with(FCMnCCATFISH,mean(DDT))
+```
+## 3. MS 1.14 - pg 8 Quantitative or Qualitative.
+### a. Length of maximum span (feet)
+  > Quantitative
+  
+### b. Number of vehicle lanes
+  > Quantitative
+  
+### c. Toll bridge (yes or no)
+  > Quatitative
+  
+### d. Average daily traffic
+  > Quantitative
+  
+### e. Condition of deck (good, fair, or poor)
+  > Quatitative
+  
+### f. Bypass or detour length (miles)
+  > Quantitative
+  
+### g. Route type (interstate, U.S., state, county, or city)
+  > Quatitative
+  
+## 4. MS page 12,13
+### a. What are the names of the four random sampling designs (1 simple and 3 more complex).
+  > simple random sample, stratified random sampling, cluster sampling, and systematic sampling
+  
+### b. Give a brief description of each.
+  > + A simple random sample of n experimental units is a sample selected from the population in such a
+way that every different sample of size n has an equal chance of selection.  
+  + Stratified random sampling is a method of sampling that divide the poppulation into smaller group based on thier characteristics first then do random sampling within the group
+  + Cluster sampling, is like simple random samling but choose the whole group instead of individual
+  + Systematic sampling is systematically selecting every kth experimental unit from a list of all experimental units 
+  
+## 5. MS 1.15 - pg 15 Use a random number generator to select a randoms ample of 5 wells from the 223. List the wells in your sample.
+```{r}
+mtbe=read.csv("MTBE.csv", header=TRUE)
+#head(mtbe) # First six lines
+#dim(mtbe) # rows and columns
+ind=sample(1:223,5,replace=FALSE) # random indices
+mtbe[ind,]
+```
+### a. Remove all the rows in mtbe that contain one or more NA's mtbeo=na.omit(mtbe)
+```{r}
+  mtbeo=na.omit(mtbe)
+```
+
+### b. Now calculate the standard deviation (sd() in R) of the depth of wells which have "Bedrock" as the Aquifier (this is using the entire mtbeo data frame)
+```{r}
+depth=mtbeo[mtbeo$Aquifier=="Bedrock",]$Depth
+sd(depth)
+```
+
+## 6. MS 1.16 - pg 15 Use a random number generator to select a random sample of 30 aftershocks from the EARTHQUAKE file. Identify the aftershocks in your sample.
+```{r}
+eq=read.csv("EARTHQUAKE.csv", header=TRUE)
+head(eq) # First six lines
+dim(eq) # rows and columns
+ind=sample(1:2929,30,replace=FALSE) # random indices
+eq[ind,]
+```
+
+### a. Make the following plot plot(ts(eq$MAG)) and record it here:
+```{r}
+plot(ts(eq$MAG))
+```
+
+### b. Using the entire eq data frame find the median (median()) of the MAGNITUDE variable.
+```{r}
+with(eq,median(MAGNITUDE))
+```
+
+## 7. MS STATISTICS IN ACTION Read the story on page 18 then answer the following:
+### a. What is the data collection method?
+  > stratified sample
+  
+### b. What is the population?
+  > 144
+  
+### c. Give the names of all the qualitative variables.
+  > SPEICES, LOCATION
+
+## 8. MS 2.1 - pg 26 Use pareto()
+```{r}
+freq=c(15,8,63,20)
+RL=c("None","Both","LegsO","WheelsO")
+l=rep(RL,freq)
+```
+### a. What type of graph is used to describe the data?
+  > Bargraph
+  
+### b. Identify the variable measured for each of the 106 robot designs.
+  > No legs, Both wheel and legs, legs only, wheel only
+  
+### c. Use graph to identify the social robot design that is currently used the most.
+  > Legs only
+  
+### d. Compute class relative frequencies for the different categories shown in the graph.
+```{r}
+  # From left to right, None,Both,Leg Only,Wheels Only
+  freq/(15+8+63+20)
+```
+ 
+### e. Use the results, part d, to construct a Pareto diagram for the data
+```{r}
+pareto<-function(x,mn="Pareto barplot",...){  # x is a vector
+  x.tab=table(x)
+  xx.tab=sort(x.tab, decreasing=TRUE,index.return=FALSE)
+  cumsum(as.vector(xx.tab))->cs
+  length(x.tab)->lenx
+  bp<-barplot(xx.tab,ylim=c(0,max(cs)),las=2)
+  lb<-seq(0,cs[lenx],l=11)
+  axis(side=4,at=lb,labels=paste(seq(0,100,length=11),"%",sep=""),las=1,line=-1,col="Blue",col.axis="Red")
+  for(i in 1:(lenx-1)){
+  segments(bp[i],cs[i],bp[i+1],cs[i+1],col=i,lwd=2)
+  }
+  title(main=mn,...)
+}
+
+pareto(l)
+```
+
+## 9. MS 2.4 - pg 27
+### a. Construct a pie chart to describe the Microsoft products with security issues. Which product had the lowest proportion of security issues in 2012?
+```{r}
+freq=c(32,6,12)
+RL=c("Windows","Explorer","Office")
+ms=rep(RL,freq)
+pie(freq,labels = RL)
+```
+
+  > Exploer has the lowest proportion
+
+### b. Construct a Pareto diagram to describe the expected repercussions from security issues. Based on the graph, what repercussion would you advise Microsoft to focus on?
+```{r}
+pareto(ms)
+```
+  
+  > They should focus of fixing Windows
+
+## 10. MS 2.10 - pg 28 Use the pie chart to make a statement about the likelihood of defectivesoftware code.
+```{r}
+swd=read.csv("SWDEFECTS.csv", header=TRUE)
+head(swd)
+library(plotrix)
+tab=table(swd$defect)
+rtab=tab/sum(tab)
+round(rtab,2)
+pie3D(rtab,labels=list("OK","Defective"),main="pie plot of SWD")
+```
+
+  > About 10% of products are defect
+  
+## 11. MS 2.72 - pg 70
+```{r}
+voltage= read.csv("VOLTAGE.csv")
+library(data.table)
+#voltage.class=setDT(voltage)[, .N, .(VELOCITY = cut(VELOCITY, breaks = seq(18000, 25000, by = 1000)))]
+```
+
+### a. Fill out the table when constructing the Histogram in pt a). Then plot the histogram by first creating a vector, 'v' say, of relative frequencies, then use names(v) and assign class names to each component, finally using barplot(v,space=0) make your plot. Construct a relative frequency histogram for the voltage readings of the old process.
+```{r}
+# Histogram table
+myTable = read.csv("Table For Q11.csv")
+knitr::kable(myTable)
+
+#BOTH LOCATION
+v = voltage$VOLTAGE
+lept<-min(v)-0.05
+rept<-max(v)+0.05
+rnge<-rept-lept
+inc<-rnge/9
+class=seq(lept, rept,by=inc)
+cv<-cut(v,breaks=class)
+both.tab=table(cv)
+barplot(both.tab,space=0,main="Frequency Histogram of BOTH",las=2)
+
+
+# OLD
+old<-subset(voltage,LOCATION=="OLD")
+v = old$VOLTAGE
+lept<-min(v)-0.05
+rept<-max(v)+0.05
+rnge<-rept-lept
+inc<-rnge/9
+class=seq(lept, rept,by=inc)
+cv<-cut(v,breaks=class)
+old.tab=table(cv)
+barplot(old.tab,space=0,main="Frequency Histogram(OLD)",las=2)
+
+```
+
+### b. Construct a stem-and-leaf display for the voltage readings of the old process. Which of the two graphs inparts a and b is more informative about where most of the voltage readings lie? Use the stem() function in R for part b)
+```{r}
+stem(old$VOLTAGE)
+```
+
+  > Stem and leaf is better in this situation
+  
+### c. Construct a relative frequency histogram for the voltage
+readings of the new process. Use R to make the histogram. Do NOT use hist()
+```{r}
+new<-subset(voltage,LOCATION=="NEW")
+v = new$VOLTAGE
+lept<-min(v)-0.05
+rept<-max(v)+0.05
+rnge<-rept-lept
+inc<-rnge/9
+class=seq(lept, rept,by=inc)
+cv<-cut(v,breaks=class)
+new.tab=table(cv)
+barplot(new.tab,space=0,main="Frequency Histogram(NEW)",las=2)
+```
+
+### d. Compare the two graphs in parts a and c. (You may want to draw the two histograms on the same graph.) Does it appear that the manufacturing process can be established locally (i.e., is the new process as good as or better than the old)?
+```{r}
+mypackage::createlayouts(1,2,1,2)
+
+barplot(old.tab,space=0,main="Frequency Histogram(OLD)",las=2)
+barplot(new.tab,space=0,main="Frequency Histogram(NEW)",las=2)
+```
+
+  > Since 9.2 is the bar, the new process is not better than the old process as there are more reading below 9.2 in the new process 
+  
+### e. Find and interpret the mean, median, and mode for each of the voltage readings data sets. Which is the preferred measure of central tendency? Explain.
+```{r}
+#OLD
+#The mean 
+mean(old$VOLTAGE)
+#The median
+median(old$VOLTAGE)
+#The mode https://www.r-bloggers.com/computing-the-mode-in-r/
+getmode = function(x){
+    ta = table(x)
+    tam = max(ta)
+    if (all(ta == tam))
+         mod = NA
+    else
+         if(is.numeric(x))
+    mod = as.numeric(names(ta)[ta == tam])
+    else
+         mod = names(ta)[ta == tam]
+    return(mod)
+}
+getmode(old$VOLTAGE)
+
+#NEW
+#The mean 
+mean(new$VOLTAGE)
+#The median
+median(new$VOLTAGE)
+#The mode
+getmode(new$VOLTAGE)
+```
+  
+  > The median would be prefered over the mean since the data is very skewed toward the upper classes. The mode tell us very little in this data as almost of them are unique
+
+### f. Calculate the z-score for a voltage reading of 10.50 at the old location.
+```{r}
+# z-score = (x-μ)/σ
+z = (10.5 - mean(old$VOLTAGE))/sd((old$VOLTAGE))
+z
+```
+
+### g. Calculate the z-score for a voltage reading of 10.50 at the new location.
+```{r}
+z = (10.5 - mean(new$VOLTAGE))/sd((new$VOLTAGE))
+z
+```
+
+### h. Based on the results of parts f and g, at which location is a voltage reading of 10.50 more likely to occur? Explain.
+  > More likely occur in OLD
+
+### i. Construct a box plot for the data at the old location. Do you detect any outliers?
+```{r}
+boxplot(old$VOLTAGE)
+```
+  
+  >Yes, there is 4 of them
+
+### j. Use the method of z-scores to detect outliers at the old location.
+```{r}
+library (lattice)
+old.z=(old$VOLTAGE-mean(old$VOLTAGE))/sd(old$VOLTAGE)
+# The likely outliners
+old.z[abs(old.z)>=2 & abs(old.z)<=3]
+# The outliners
+old.z[abs(old.z)>3]
+```
+
+### k. Construct a box plot for the data at the new location.Do you detect any outliers?
+```{r}
+boxplot(new$VOLTAGE)
+```
+
+  > No
+  
+### l. Use the method of z-scores to detect outliers at the new location.
+```{r}
+new.z=(new$VOLTAGE-mean(new$VOLTAGE))/sd(new$VOLTAGE)
+# The likely outliners
+new.z[abs(new.z)>=2 & abs(new.z)<=3]
+# The outliners
+new.z[abs(new.z)>3]
+```
+
+### m. Compare the distributions of voltage readings at the two locations by placing the box plots, parts i and k, side by side vertically.
+```{r}
+library(ggplot2)
+g = ggplot(voltage, aes(x=LOCATION, y=VOLTAGE)) + geom_boxplot()
+g
+```
+
+
+## 12. MS 2.73 - pg 70 Give an interval that will likely contain about 95% of all coated pipe roughness measurements.
+```{r}
+# https://www.cyclismo.org/tutorial/R/confidence.html
+rp = read.csv("ROUGHPIPE.csv")
+m = mean(rp$ROUGH)
+sd = sd(rp$ROUGH)
+error = qnorm(0.975)*sd/sqrt(nrow(rp))
+left = m-error
+right = m+error
+
+# 95% measurements can be found 
+# From
+print(left)
+# To
+print(right)
+```
+
+## 13. MS 2.80 - pg 72 
+```{r}
+ga = read.csv("GOBIANTS.csv")
+```
+
+### a. Find the mean, median, and mode for the number of ant species discovered at the 11 sites. Interpret each of these values.
+```{r}
+#The mean
+with(ga,mean(AntSpecies))
+#The median
+with(ga,median(AntSpecies))
+#The mode 
+with(ga,getmode(AntSpecies))
+```
+
+### b. Which measure of central tendency would you recommend to describe the center of the number of ant species distribution? Explain.
+  > The median because there are two modes and 49 and 52 are very out of place, which greatly affect the median
+
+### c. Find the mean, median, and mode for the total plant cover percentage at the 5 Dry Steppe sites only.
+```{r}
+ga.dry=subset(ga, Region=="Dry Steppe ")
+#The mean
+with(ga.dry,mean(PlantCov))
+#The median
+with(ga.dry,median(PlantCov))
+#The mode
+with(ga.dry,getmode(PlantCov))
+```
+
+### d. Find the mean, median, and mode for the total plant cover percentage at the 6 Gobi Desert sites only.
+```{r}
+ga.gobi=subset(ga, Region=="Gobi Desert")
+#The mean
+with(ga.gobi,mean(PlantCov))
+#The median
+with(ga.gobi,median(PlantCov))
+#The mode
+with(ga.gobi,getmode(PlantCov))
+```
+
+### e. Based on the results, parts c and d, does the center of the total plant cover percentage distribution appear to be different at the two regions?
+  > Yes, there are more plants in Dry Steppe
+
+## 14. MS 2.84 - pg 74
+```{r}
+library("readxl")
+gal=read_excel("GALAXY2.xls")
+```
+
+a. Use a graphical method to describe the velocity distribution of galaxy cluster A1775.
+```{r}
+velocity = gal$VELOCITY
+hist(velocity)
+```
+
+b. Examine the graph, part a. Is there evidence to support the double cluster theory? Explain.
+  > It looks like there are two interval, centered aroud 18000-21000 and 21000-25000. This is the eviden that support the double cluster theory
+  
+c. Calculate numerical descriptive measures (e.g., mean and standard deviation) for galaxy velocities in cluster A1775. Depending on your answer to part b, you may need to calculate two sets of numerical descriptive measures, one for each of the clusters (say, A1775A and A1775B) within the double cluster.
+```{r}
+#Cluster A VELOCITY<21000
+clusterA = subset(gal, VELOCITY<21000)
+#The Mean
+with(clusterA,mean(VELOCITY))
+#The median
+with(clusterA,median(VELOCITY))
+#The mode
+with(clusterA,getmode(VELOCITY))
+#The Standard Deviation
+with(clusterA,sd(VELOCITY))
+#Cluster B VELOCITY>21000
+clusterB = subset(gal, VELOCITY>21000)
+#The Mean
+with(clusterB,mean(VELOCITY))
+#The median
+with(clusterB,median(VELOCITY))
+#The mode
+with(clusterB,getmode(VELOCITY))
+#The Standard Deviation
+with(clusterB,sd(VELOCITY))
+```
+
+
+d. Suppose you observe a galaxy velocity of 20,000 km/s. Is this galaxy likely to belong to cluster A1775A or A1775B? Explain.
+  > It would be likely belong the cluster A since at 20000 is where the the highest frequency of cluster A
+  
+## 15. Using the ddt data set re-create the plot below using ggplot
+```{r}
+library(ggplot2)
+ddt = read.csv("DDT.csv")
+g = ggplot(ddt,aes(x=RIVER, y=LENGTH, fill=SPECIES,)) + geom_boxplot() +ggtitle("HOA HOANG")
+g
+```
+
+

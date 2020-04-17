@@ -6,7 +6,7 @@
 #' @param c Number of column.
 #' @return The specific layout
 #' @examples
-#' create4layouts(1,4,2,2)
+#' createlayouts(1,4,2,2)
 #' @export
 
 createlayouts=function(x,y,r,c){

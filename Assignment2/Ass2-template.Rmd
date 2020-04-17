@@ -1,0 +1,366 @@
+---
+title: 'Assignemnt 2'
+author: "Hoa Hoang"
+date: '`r format(Sys.Date(),format="%A, %B %d, %Y")`'
+output: 
+  html_document:
+    df_print: paged
+    fig_caption: true
+    highlights: pygments
+    number_sections: no
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE, fig.align='center'}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Completed
+17/17
+
+## Q1 MS 3.36 pg 105-106
+### a.
+$P(ExpertFail | Match) = 1 - P(ExpertSuccess|Match)$
+```{r}
+1-(92.12/100)
+```
+### b.
+$P(NoviceFail | Match) = 1 - P(NoviceSuccess|Match)$
+```{r}
+1-(74.55/100)
+```
+
+### c. 
+Given the answer from part a and b, the participant that fail is more likely is a novice
+
+## Q2 MS 3.52 - pg 111
+
+$P(E1) = 0.3$
+
+$P(E2) = 0.2$
+
+$P(E3) = 0.5$
+
+$P(error|E1) = 0.01$
+
+$P(error|E2) = 0.03$
+
+$P(error|E3) = 0.02$
+
+### a. 
+
+$P(E1 | error) = \frac{P(E1)P(error|E1)}{P(E1)P(error|E1)+P(E2)P(error|E2)+P(E3)P(error|E3)}$
+```{r}
+(0.3*0.01)/(0.3*0.01+0.2*0.03+0.5*0.02)
+```
+
+### b. 
+
+$P(E2 | error) = \frac{P(E2)P(error|E2)}{P(E1)P(error|E1)+P(E2)P(error|E2)+P(E3)P(error|E3)}$
+```{r}
+(0.2*0.03)/(0.3*0.01+0.2*0.03+0.5*0.02)
+```
+
+### c. 
+$P(E3 | error) = \frac{P(E3)P(error|E3)}{P(E1)P(error|E1)+P(E2)P(error|E2)+P(E3)P(error|E3)}$
+```{r}
+(0.5*0.02)/(0.3*0.01+0.2*0.03+0.5*0.02)
+```
+
+### d. 
+
+Engineer #3
+
+## Q3 MS Theorem 3.1 - pg 113
+With two digit, we have 2^2 = 4, is number of possible values  
+With three digit, we have 2^3 = 8, is number of possible values 
+With n digit, we have 2^n possible values 
+
+## Q4 MS Theorem 3.2 - pg 114
+Given three balls, black(B), white(W), and yellow(Y). If we want the possible combination of them without picking, then:
+
+At first we have 3 ways to pick any ball.   
+Then next, we have 2 ways of picking the ball (Since we do not replace the picked ball).   
+Finally, we pick the last ball.
+
+Possible ways: 3 * 2 * 1 = 6 (BWY, BYW, WBY, WYB, YBW, YWB)
+Which is the same as $\frac{N!}{N - n!}=\frac{3!}{(3 - 3)!} = \frac{3*2*1}{1} = 6$
+
+## Q5 MS Theorem 3.3 - pg 116
+If we have N elemnets in a set   
+Let A be the number of way partition N distinctly different elements into k sets
+By theorm 3.2, we have N! way to arrange the elements in N position
+And by theorm 3.1, we have $A*n_1!n_2!...n_k!$   
+Therefore, N distinctly different elementsin k positions is $A=\frac{N!}{n_1!n_2!...n_k!}$
+
+## Q6 MS Theorem 3.4 - pg 117
+Selecting n element is N elements is the same as partitioning into 2 sets, $\frac{N!}{n!(N-n)!}$, as proven by theorm 3.3
+
+## Q7 MS 4.2 - pg 138
+### a.
+```{r}
+.09+.30+.37+.20+.04
+```
+
+### b. 
+```{r}
+.20+.04
+```
+
+### c.
+```{r}
+.30+.09
+```
+
+## Q8 MS 4.12 - pg 143
+### a. 
+All p(y) is less than or equal to 1 and greater than or equal to 0
+```{r}
+.17+.10+.11+.11+.10+.10+.07+.05+.03+.02+.02+.02+.02+.02+.01+.01+.01+.01+.01+.005+.005
+```
+
+### b. 
+```{r}
+.02+.02+.02+.02+.01+.01+.01+.01+.01+.005+.005
+```
+
+### c. 
+```{r}
+#mean
+m=0*.17+1*.10+2*.11+3*.11+4*.10+5*.10+6*.07+7*.05+8*.03+9*.02+10*.02+11*.02+12*.02+13*.02+14*.01+15*.01+16*.01+17*.01+18*.01+19*.005+20*.005
+m
+# Σx2p − μ2
+v=(0^2*.17+1^2*.10+2^2*.11+3^2*.11+4^2*.10+5^2*.10+6^2*.07+7^2*.05+8^2*.03+9^2*.02+10^2*.02+11^2*.02+12^2*.02+13^2*.02+14^2*.01+15^2*.01+16^2*.01+17^2*.01+18^2*.01+19^2*.005+20^2*.005) - m^2
+v
+```
+
+### d. 
+```{r}
+# Chebyshev: At least 75% of the data lie within two standard deviations of the mean
+from = m-2*sqrt(v)
+if(from<0){
+  from = 0;
+}
+from
+to = m+2*sqrt(v)
+to
+```
+
+## Q9 MS 4.34 - pg 154
+### a. 
+```{r}
+dbinom(10,25,.7)
+```
+
+### b. 
+```{r}
+pbinom(5,25,.7)
+```
+
+### c.
+```{r}
+#mean
+25*0.7
+#sd
+sqrt(25*0.7*0.3)
+```
+
+### d.
+It is expected 17 or 18 in 25 PhD are foreign nationals
+With the calculated sd, we can use emperical rule to to guess the distribution using the range within 1,2,3 sd
+
+## Q10 MS 4.46 - pg 158
+### a.
+to each of the 10 tracks?
+```{r}
+#probability of 5 trains in a track if having onlny one track
+p=5/50
+#probability of 5 trains in every track, from formula
+factorial(50)/(factorial(5)^10) * (p^5)^10 
+#OR dmultinom(c(5,5,5,5,5,5,5,5,5,5), 50, c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))
+
+```
+
+### b. 
+```{r}
+# number of ways 0 train on the track 1 = number of ways all trains on other tracks
+a = 9^50  # 9 other tracks and n = 50
+# number of ways 1 train on the track 1
+b = 50 * 9^49 # 50 choose 1 and 49 train left to make combinations in other tracks
+(a+b)/10^50 # 10^50 is the total ways
+```
+
+## Q11 MS 4.54 - pg 162
+### a.
+This is a geometric distribution so $P(Y)=pq^{y-1}$
+
+### b.
+
+```{r}
+#probabbility of other reasons and q
+p=(12+6+4+18)/100
+q = 1-p
+#means
+1/p
+```
+It means on avarage, we must interview 2.5 people until we found one that say "green" not because of label or packaging
+
+### c. 
+```{r}
+p*(q)^0
+```
+
+### d.
+```{r}
+1-p*(q-1)^0 - p*(q)^1
+```
+
+## Q12 MS 4.66 - pg 168
+### a. 
+```{r}
+#This is hyper distribution
+n=10
+N=209
+r=8
+p=r/n
+m=(n*p)/N
+m
+```
+
+### b.
+```{r}
+dhyper(4,r,N-r,n)
+```
+
+## Q13 MS 4.78 - pg 173
+### a. 
+```{r}
+#This is poisson distribution so lambda is the mean
+l=0.03
+l
+```
+
+### b. 
+Probability of an interval is independent of others'   
+Probability of an interval does not change over different intervals.   
+
+### c. 
+```{r}
+dpois(0,l)
+```
+|
+## Q14 MS 5.2 - pg 191
+### a.
+$\int_{0}^{1}c(2-y)dy=1$   
+$1=c\int_{0}^{1}(2-y)dy$   
+$1=c|2y-\frac{y^2}{2}|^1_0$   
+$1=c(2-\frac{1}{2})$   
+$c=\frac{2}{3}$   
+
+### b.
+$F(y)=\int_{0}^{y}c(2-y)dy$   
+$F(y)=\frac{2}{3}|2y-\frac{y^2}{2}|^y_0$   
+$F(y)=\frac{2}{3}(2y-\frac{y^2}{2})$   
+
+### c.
+$F(0.4)=\frac{2}{3}(2*0.4-\frac{0.4^2}{2})$
+```{r}
+(2/3)*(2*0.4-((0.4^2)/2))
+```
+
+### d.
+$P(.1 \leq y \leq .6)=F(0.6)-F(0.1)$   
+```{r}
+(2/3)*(2*0.6-((0.6^2)/2)) - (2/3)*(2*0.1-((0.1^2)/2))
+```
+
+## Q15 MS 5.10 - pg 196
+### a.
+Mean   
+$E(y)=\int_{-5}^{5}y*\frac{3}{500}(25-y^2)dy$    
+$E(y)=\frac{3}{500}|(\frac{25y^2}{2}-\frac{y^4}{4})|^5_{-5}$   
+$E(y)=0$
+
+Variance   
+$E(y^2)=\int_{-5}^{5}y^2*\frac{3}{500}(25-y^2)dy$   
+$E(y^2)=\frac{3}{500}|(\frac{25y^3}{3}-\frac{y^5}{5})|^5_{-5}$  
+$E(y^2)=\frac{3}{500}(\frac{25*5^3}{3}-\frac{5^5}{5}) - (\frac{25*(-5)^3}{3}-\frac{(-5)^5}{5})$   
+$E(y^2)=\frac{3}{500}(\frac{3125}{3}-\frac{3125}{5}) - (\frac{-3125}{3}-\frac{-3125}{5})$   
+$E(y^2)=\frac{3}{500}(\frac{6250}{3}-\frac{6125}{5})$ 
+$E(y^2)=5$   
+$V(y)=E(y^2)-E(y)^2$   
+$V(y)=5-0 =5$
+
+
+### b.
+E(y) is still 0   
+Since 1 hr = 60 mins   
+$V(60y)=60^2V(y)=3600*5=18000$   
+
+### c.
+E(y) is still 0   
+Since 1 second = 1/60 min   
+$V(y/60)=\frac{V(y)}{60^2}=\frac{5}{3600}=0.001388889$  
+
+## Q16 MS 5.36 - pg 205
+```{r}
+m=50
+sd=3.2
+#Normal distribution
+```
+### a.
+```{r}
+z=(45-m)/sd
+1-pnorm(z)
+```
+
+### b.
+```{r}
+z=(55-m)/sd
+pnorm(z)
+```
+
+### c.
+```{r}
+z1=(51-m)/sd
+z2=(52-m)/sd
+pnorm(z2)-pnorm(z1)
+```
+
+## Q17 MS 5.38- pg 205
+```{r}
+m=605
+sd=185
+```
+
+### a. 
+```{r}
+z1=(500-m)/sd
+z2=(700-m)/sd
+pnorm(z2)-pnorm(z1)
+```
+
+### b. 
+```{r}
+z1=(400-m)/sd
+z2=(500-m)/sd
+pnorm(z2)-pnorm(z1)
+```
+### c. 
+```{r}
+z=(850-m)/sd
+pnorm(z)
+```
+
+### d. 
+```{r}
+z=(1000-m)/sd
+1-pnorm(z)
+```
+
+### e. 
+```{r}
+m + sd*(1.28) #1.28 from Appendix B Table 5 
+```
+

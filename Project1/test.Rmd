@@ -1,0 +1,29 @@
+---
+title: "test"
+author: "Hoa Hoang"
+date: "3/4/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+swd=read.csv("SWDEFECTS.csv")
+
+#PRED_LOC
+tab=with(swd, table(predict.loc.50,defect))
+barplot(tab,beside = TRUE, leg =TRUE)
+tab
+write.csv(tab)
+a=tab[1,1]
+a
+b=tab[1,2]
+b
+c=tab[2,1]
+c
+d=tab[2,2]
+d
+```
+

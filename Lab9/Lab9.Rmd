@@ -1,0 +1,296 @@
+---
+title: 'Lab9'
+author: "Hoa Hoang"
+date: '`r format(Sys.Date(),format="%A, %B %d, %Y")`'
+output: 
+  html_document:
+    df_print: paged
+    fig_caption: true
+    highlights: pygments 
+    number_sections: no
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+---
+
+## Task1
+```{r}
+getwd()
+```
+
+## Task2
+```{r}
+myboot<-function(iter=10000,x,fun="mean",alpha=0.05,...){  
+
+#Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+#Now sample with replacement
+y=sample(x,n*iter,replace=TRUE) #A
+
+# Make a matrix with all the resampled values
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) 
+# xstat is a vector and will have iter values in it 
+ci=quantile(xstat,c(alpha/2,1-alpha/2)) #B
+# Nice way to form a confidence interval
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,freq=FALSE,las=1,main="Histogram of Bootstrap sample statistics",...)
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+text(ci[1],0,paste("(",round(ci[1],2),sep=""),col="Red",cex=3)
+text(ci[2],0,paste(round(ci[2],2),")",sep=""),col="Red",cex=3)
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=3)
+
+return(list(ci=ci,fun=fun,x=x))# Some output to use if necessary
+}
+
+```
+
+### Code Explain of Line A and B
+Line A is sampling with replacement by using the x vector with the size of n*iter   
+Line B is sampling quantiles corresponding to the given probabilities. It use the xstat vector and c(alpha/2,1-alpha/2) probability
+
+### As used in the myboot() function, each datum in x will be selected with equal probability. Why is this necessary?
+It is to ensure the resampling will retain as much information as possible
+
+### Explain unique()
+```{r}
+set.seed(35) # This will give everyone the same sample
+sam=round(rnorm(20,mean=10,sd=4),2)
+unique(sample(sam,20,replace=TRUE) ) # repeat this line 5Xs
+#Explain what you see.
+unique(sample(sam,20,replace=FALSE) ) # repeat this line 5Xs
+#Explain what you see.
+```
+
+What unique does is remove duplicate. The first sample() will have less value as some of them are removed. The second sampling change nothing as we don't do replacement
+
+### What happens? Why? (with the folling code)
+```{r}
+# sample(sam,21,replace=FALSE)
+```
+
+This sample() will not run since in sam, we only have 20 values. We want 21 with no replacement. Short on 1 value
+
+
+## Task 3
+```{r}
+myboot2<-function(iter=10000,x,fun="mean",alpha=0.05,cx=1.5,...){  #Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+y=sample(x,n*iter,replace=TRUE)
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) # xstat is a vector and will have iter values in it 
+ci=quantile(xstat,c(alpha/2,1-alpha/2))# Nice way to form a confidence interval
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,freq=FALSE,las=1,
+main=paste("Histogram of Bootstrap sample statistics","\n","alpha=",alpha," iter=",iter,sep=""),
+...)
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+text(ci[1],0,paste("(",round(ci[1],2),sep=""),col="Red",cex=cx)
+text(ci[2],0,paste(round(ci[2],2),")",sep=""),col="Red",cex=cx)
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=cx)
+
+invisible(list(ci=ci,fun=fun,x=x))# Some output to use if necessary
+}
+```
+
+### 4 myboot2() with alpha = 0.05
+```{r}
+a=0.05
+set.seed(39)
+sam1=rnorm(25,mean=25,sd=10)
+sam1.mean=myboot2(x=sam1,alpha=a,xlab="Mean")
+set.seed(30)
+sam2=rchisq(20,df=3)
+sam2.mean=myboot2(x=sam2,alpha=a,xlab="Mean")
+set.seed(40)
+sam3=rgamma(30,shape=2,scale=3)
+sam3.mean=myboot2(x=sam3,alpha=a,xlab="Mean")
+set.seed(10)
+sam4=rbeta(20,shape1=3,shape2=4)
+sam4.mean=myboot2(x=sam4,alpha=a,xlab="Mean")
+```
+
+### In each of the above cases how close is the point estimate to the population value?
+All of them are very close to the population mean.   
+Mean of rnorm is 25   
+Mean of rchisq is 3   
+Mean of rgamma is 6   
+Mean of rbeta is 3/(7) = 0.42
+
+### In each of the above cases does the interval contain the population value? 
+Yes, all of the means are in the intervals
+
+### 4 myboot2() with alpha = 0.2
+```{r}
+a=0.2
+set.seed(39)
+sam1=rnorm(25,mean=25,sd=10)
+sam1.mean=myboot2(x=sam1,alpha=a,xlab="Mean")
+set.seed(30)
+sam2=rchisq(20,df=3)
+sam2.mean=myboot2(x=sam2,alpha=a,xlab="Mean")
+set.seed(40)
+sam3=rgamma(30,shape=2,scale=3)
+sam3.mean=myboot2(x=sam3,alpha=a,xlab="Mean")
+set.seed(10)
+sam4=rbeta(20,shape1=3,shape2=4)
+sam4.mean=myboot2(x=sam4,alpha=a,xlab="Mean")
+```
+
+
+## Task 4
+### Adjust myboot2()
+```{r}
+newmyboot<-function(iter=10000,x,fun="mean",alpha=0.05,...){  
+
+#Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+#Now sample with replacement
+y=sample(x,n*iter,replace=TRUE) #A
+
+# Make a matrix with all the resampled values
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) 
+# xstat is a vector and will have iter values in it 
+ci=quantile(xstat,c(alpha/2,1-alpha/2)) #B
+# Nice way to form a confidence interval
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,freq=FALSE,las=1,main="Histogram of Bootstrap sample statistics",...)
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+text(ci[1],0,paste("(",round(ci[1],2),sep=""),col="Red",cex=3)
+text(ci[2],0,paste(round(ci[2],2),")",sep=""),col="Red",cex=3)
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=3)
+
+return(list(xstat=xstat,ci=ci,fun=fun,x=x))# Some output to use if necessary
+}
+```
+
+### Using the adjusted myboot()
+```{r}
+sam=c(1,1,1,2,2,2,2,3,3,3,4,4)
+newmyboot(x=sam,fun="median")
+```
+
+### What is the bootstrap interval estimate for the median? (L,U)
+1.5 to 3
+
+## Task 5
+### 4 myboot2() with mean/median and alpha = 0.05
+```{r}
+# Helper function
+myf = function(x) {mean(x)/median(x)}
+a=0.05
+set.seed(39)
+sam1=rnorm(25,mean=25,sd=10)
+sam1.mean=myboot2(x=sam1,alpha=a,fun="myf", xlab="Mean divided by Median")
+set.seed(30)
+sam2=rchisq(20,df=3)
+sam2.mean=myboot2(x=sam2,alpha=a,fun="myf", xlab="Mean divided by Median")
+set.seed(40)
+sam3=rgamma(30,shape=2,scale=3)
+sam3.mean=myboot2(x=sam3,alpha=a,fun="myf", xlab="Mean divided by Median")
+set.seed(10)
+sam4=rbeta(20,shape1=3,shape2=4)
+sam4.mean=myboot2(x=sam4,alpha=a,fun="myf", xlab="Mean divided by Median")
+```
+
+## Task 6
+### 4 more myboot2() with alpha = 0.2 for mean and variance
+```{r}
+a=0.2
+set.seed(39)
+sam1=rweibull(25,1,2)
+sam1.mean=myboot2(x=sam1,alpha=a,fun="mean",xlab="Mean")
+sam1.var=myboot2(x=sam1,alpha=a,fun="var",xlab="Variance")
+set.seed(30)
+sam2=rpois(20,3)
+sam2.mean=myboot2(x=sam2,alpha=a,fun="mean",xlab="Mean")
+sam2.var=myboot2(x=sam2,alpha=a,fun="var",xlab="Variance")
+set.seed(40)
+sam3=rgeom(30,0.7)
+sam3.mean=myboot2(x=sam3,alpha=a,fun="mean",xlab="Mean")
+sam3.var=myboot2(x=sam3,alpha=a,fun="var",xlab="Variance")
+set.seed(10)
+sam4=rbinom(5,20,0.3)
+sam4.mean=myboot2(x=sam4,alpha=a,fun="mean",xlab="Mean")
+sam4.var=myboot2(x=sam4,alpha=a,fun="var",xlab="Variance")
+```
+
+## Task 7
+### 2 interesting invervals, using my boot
+```{r}
+set.seed(68)
+a=0.05
+mean = 10
+sd = 4
+n = 20
+sam=rnorm(n,mean,sd) 
+#mean
+sam.mean=myboot2(x=sam,alpha=a,fun="mean",xlab="Mean")
+#median
+sam.var=myboot2(x=sam,alpha=a,fun="median",xlab="Median")
+```
+
+### Using theory
+For the mean
+```{r}
+val=mean(sam)
+z = qnorm((1-a)*0.95,mean=0,sd=1)
+sdn=sd/sqrt(n)
+val-z*sdn
+val+z*sdn
+```
+
+For the median
+```{r}
+val=median(sam)
+z = qnorm((1-a)*0.95,mean=0,sd=1)
+sdn=sd/sqrt(n)
+val-z*sdn
+val+z*sdn
+```
+
+As we can see the theory and the graphic's intervals are very close. We can say that we theory is correct
+
+## Task 8
+```{r}
+FIREDAM=read.csv("FIREDAM.csv")
+mypackage::myboot2(x=FIREDAM$DAMAGE,xlab="Mean",fun="mean")
+```
+

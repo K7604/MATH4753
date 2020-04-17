@@ -1,0 +1,34 @@
+---
+title: "Demo"
+author: "Hoa Hoang"
+date: "4/17/2020"
+output: html_document
+---
+
+##create4layouts
+```{r}
+library(mypackage)
+createlayouts(1,4,2,2)
+x=rnorm(30,5,3)
+barplot(x)
+boxplot(x)
+hist(x)
+plot(x)
+```
+
+##mybin()
+```{r}
+mybin(100,10,0.7)
+```
+
+##myci
+```{r}
+x=rnorm(30,10,3)
+myci(x)
+```
+
+##myncurve()
+```{r}
+myncurve(mu=10,sigma=5, a=6)
+```
+

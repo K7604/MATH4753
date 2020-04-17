@@ -1,0 +1,315 @@
+---
+title: 'Assignment4'
+author: "Hoa Hoang"
+date: '`r format(Sys.Date(),format="%A, %B %d, %Y")`'
+output: 
+  html_document:
+    df_print: paged
+    fig_caption: true
+    highlights: pygments 
+    number_sections: no
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+---
+
+## Completed: 10/10
+
+## 1. MS 7.118 - pg 364
+```{r}
+file = read.csv("NZBIRDS.csv")
+```
+
+### a.
+```{r}
+sam=dplyr::sample_n(file,35)
+sam
+```
+
+### b.
+```{r}
+#mean
+m=mean(sam$Body.Mass)
+m
+#sd
+s=sd(sam$Body.Mass)
+s
+# 95% CI for mean of body mass
+n = 35
+a=0.05
+left=m-qt(1-a/2,n-1)*(s/sqrt(n))
+right=m+qt(1-a/2,n-1)*(s/sqrt(n))
+sprintf("%f to %f",left,right)
+# 95% CI for variance of body mass
+left=((n-1)*var(sam$Body.Mass))/qchisq(1-a/2,n-1)
+right=((n-1)*var(sam$Body.Mass))/qchisq(a/2,n-1)
+sprintf("%f to %f",left,right)
+```
+
+### c.
+For the mean, 95% data is within the calculated range   
+For the variance, the numbers are quite big, meaning the value in our sample are far from the mean. We can see this from the file, one mass is 200000, another is only 25   
+
+### d.
+The true mean is 9113. The result of part 4 is very likely to be in the 95% CI. Because 95% CI already mean that 95% data lie within the interval.
+
+### e.
+```{r}
+#mean
+sam
+m=mean(sam$Egg.Length)
+m
+#sd
+s=sd(sam$Egg.Length)
+s
+# 95% CI for mean of egg length
+n = 35
+a = 0.05
+left=m-qt(1-a/2,n-1)*(s/sqrt(n))
+right=m+qt(1-a/2,n-1)*(s/sqrt(n))
+sprintf("%f to %f",left,right)
+# 95% CI for variance of egg length
+left=((n-1)*s^2)/qchisq(1-a/2,n-1)
+right=((n-1)*s^2)/qchisq(a/2,n-1)
+sprintf("%f to %f",left,right)
+```
+
+For the mean, 95% data is within the calculated range   
+For the variance, the numbers are quite big, meaning the value in our sample are far from the mean.
+
+The true mean is 61.06. The result of part 4 is very likely to be in the 95% CI. Because 95% CI already mean that 95% data lie within the interval.
+
+### f.
+```{r}
+#1 for non-extinct, 2 for extinct
+a=0.05
+n1=78
+n2=38
+p1=7/78
+p2=21/38
+e1=(p1*(1-p1))/n1
+e2=(p2*(1-p2))/n2
+left=(p1-p2)-qnorm(1-a/2)*sqrt(e1+e2)
+right=(p1-p2)+qnorm(1-a/2)*sqrt(e1+e2)
+sprintf("%f to %f",left,right)
+```
+### g.
+Since the interval doesn't include 0 and both of the numbers are negative. The numbers does support the theory
+
+## 2. MS 7.120 - pg 365
+```{r}
+#1 for Southern Pine , 2 for Ponderosa Pine
+n1=100
+n2=47
+m1=1312
+m2=1352
+s1=422
+s2=271
+a=0.1
+```
+
+### a. 
+```{r}
+#90% CI for the mean different
+df=n1+n2-2
+e=s1^2/n1+s2^2/n2
+left=m1-m2-qnorm(1-a/2)*sqrt(e)
+right=m1-m2+qnorm(1-a/2)*sqrt(e)
+sprintf("%f to %f",left,right)
+```
+
+### b. 
+```{r}
+#90% CI for the variance
+# Formula is on page 342
+a=0.1
+left= (s1^2/s2^2)/qf(1-a/2,n1-1,n2-1)
+right= (s1^2/s2^2)*qf(1-a/2,n2-1,n1-1)
+sprintf("%f to %f",left,right)
+```
+
+## 3. MS 7.128 - pg 367
+### a.
+Fact: $z^2$ is identical to $\chi^2$.   
+Z formula:   
+$$z=\frac{y-\mu}{\sigma}$$
+With mean = 0, we have
+$$z=\frac{y}{\sigma}$$
+$$z^2=\frac{y^2}{\sigma^2} = \chi^2$$
+
+### b. 
+$$\chi^2_{0.05/2} \leq \frac{y^2}{\sigma^2} \leq \chi^2_{1-0.05/2}$$
+$$\chi^2_{0.05/2} \leq \frac{y^2}{\sigma^2} \leq \chi^2_{1-0.05/2}$$
+$$1/ \chi^2_{0.05/2} \leq \frac{\sigma^2}{y^2} \leq 1/ \chi^2_{1-0.05/2}$$
+$$y^2/ \chi^2_{0.05/2} \leq \sigma^2 \leq y^2/ \chi^2_{1-0.05/2}$$
+
+## 4. MS 8.24 - pg 390
+### a.
+$H_0:\mu=2$
+$H_a:\mu \neq 2$
+
+### b.
+$T = -1.02$
+$p = 0.322$
+
+### c.
+If p is less than a=0.05, then reject the null hypothesis
+
+### d.
+Since p is not less than a=0.05. We don't reject the null hypothesis
+
+### e.
+The 95% CI is (1.635802,2.126198). The null hypothesis, $\mu=2$ is in the interval. We don't reject it.
+Since both the confidental interval and t statistic use 95%, they must lead to the same conclustion
+
+## 5. MS 8.28 - pg 392
+### a.
+$H_0:\mu = 15$
+$H_a:\mu \neq 15$
+
+```{r}
+file=read.csv("WISCLAKES.csv")
+t.test(file$DOC,mu=15,conf.level = 0.90)
+```
+Since p is not less than a=0.1. We don't reject the null hypothesis
+
+### b.
+We must find the rejected regions in term of $\bar y$
+$t_{0.95,24}= \pm 1.711$ From table   
+For t=-1.711, $\bar y = \mu_0+t(\frac {s}{\sqrt{n}})=15-1.711(\frac{12.96}{\sqrt 5})=10.565$   
+For t=-1.711, $\bar y = \mu_0+t(\frac {s}{\sqrt{n}})=15+1.711(\frac{12.96}{\sqrt 5})=19.435$   
+Thus, we reject $\bar y < 10.565$ or $\bar y > 19.435$   
+$P(t<\frac{10.565-14}{\frac{12.6}{\sqrt 25}})+P(t>\frac{19.435-14}{\frac{12.6}{\sqrt 25}})=0.1212$   
+
+The likely hood of detecting the mean equal 14 is 0.1212
+
+## 6. MS 8.44 - pg 40
+```{r}
+data=read.csv("ORCHARD.csv")
+fog=dplyr::filter(data, CONDITION == "FOG")
+clear=dplyr::filter(data, CONDITION == "CLEAR" | CONDITION == "CLOUD")
+var.test(fog$RATIO,clear$RATIO)
+```
+
+Since p-value = 0.2924 > 0.05, we do not reject the null hypothesis. We will do t.test with var.equal = TRUE
+
+```{r}
+t.test(fog$RATIO,clear$RATIO,var.equal = T)
+```
+
+By going with p = 0.06788 > 0.05, and the CI, we can say that the mean not much different
+
+## 7. MS 8.84 - pg 425 This refers to 8.39 NOT 8.33!
+### a.
+```{r}
+data=read.csv("GASTURBINE.csv")
+traditional=dplyr::filter(data, ENGINE == "Traditional")
+advanced=dplyr::filter(data, ENGINE =="Advanced")
+aero=dplyr::filter(data, ENGINE =="Aeroderiv")
+var.test(traditional$HEATRATE,aero$HEATRATE,conf.level = 0.95)
+```
+
+p = 0.004234 < 0.05 so we reject the null hypothesis. Meaning that the variances are not equal
+
+### b.
+```{r}
+var.test(advanced$HEATRATE,aero$HEATRATE,conf.level = 0.95)
+```
+
+p-value = 1.192e-06 which is way smaller than 0.05. We reject the null hypothesis. The variances are not equal
+
+## 8. MS 8.99 - pg 438
+```{r}
+data=read.csv("GOBIANTS.csv")
+dry=dplyr::filter(data, Region == "Dry Steppe ")
+gobi=dplyr::filter(data, Region == "Gobi Desert")
+var.test(dry$AntSpecies,gobi$AntSpecies)
+```
+
+We go with the null hypothesis, the variance is equal
+
+```{r}
+t.test(dry$AntSpecies,gobi$AntSpecies,var.equal = T)
+```
+
+
+### a.
+$H_0: \mu_1-\mu_2 = 0$   
+$H_1: \mu_1-\mu_2 \neq 0$   
+
+### b.
+t = 0.1821
+
+### c.
+We accept (-24.74894, 29.08228) and reject everywhere else.
+
+### d.
+p = 0.8595
+
+### e.
+p = 0.8595 > 0.05 so we go with the null hypothesis, meaning the mean are not significantly different
+
+### f.
+We are assuming the two sample are independent, from normal population
+
+## 9. MS 8.104 - pg 439
+```{r}
+data=read.csv("THRUPUT.csv")
+t.test(data$HUMAN,data$AUTO,paired=T)
+```
+
+p-value = 0.03396 < 0.05. We conclude that there is a significant different in the mean
+
+## 10.
+```{r}
+########### bootstrap function ##################
+
+myboot<-function(iter=10000,x,fun="mean",alpha=0.05,popmean=20,popsd=3,...){  #Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+y=sample(x,n*iter,replace=TRUE)
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) # xstat is a vector and will have iter values in it 
+# t score
+t=qt(1-alpha/2,df=n-1)
+# Ci
+ci=quantile(xstat,c(alpha/2,1-alpha/2))
+# cit
+cit1=mean(x)-t*(popsd/sqrt(n))
+cit2=mean(x)+t*(popsd/sqrt(n))
+cit=c(cit1,cit2)
+
+
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,breaks=seq(trunc(min(xstat)-1),trunc(max(xstat)+1),0.5),freq=FALSE,las=1,col=rainbow(7),
+          xlim=c(trunc(min(xstat)),trunc(max(xstat))),
+          main=paste("Histogram of Bootstrap sample statistics","\n","alpha=",alpha," iter=",iter,sep=""),...)
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+
+
+text(ci[1],0,paste("(",round(ci[1],2),sep=""),col="Red",cex=3)
+text(ci[2],0,paste(round(ci[2],2),")",sep=""),col="Red",cex=3)
+
+text(cit[1],0.2,paste("(",round(cit[1],2),sep=""),col="Blue",cex=3)
+text(cit[2],0.2,paste(round(cit[2],2),")",sep=""),col="Blue",cex=3)
+
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=3)
+
+return(list(fun=fun,x=x,t=t,ci=ci,cit=cit))# Some output to use if necessary
+}
+################### END mybooot function #####################
+set.seed(35); sam<-round(rnorm(30,mean=20,sd=3),3)
+myboot(10000,x=sam,fun = "mean",alpha=0.05,popmean=20,popsd=3)
+
+```

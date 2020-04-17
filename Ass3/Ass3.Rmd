@@ -1,0 +1,444 @@
+---
+title: 'Assignemnt 3'
+author: "Hoa Hoang"
+date: '`r format(Sys.Date(),format="%A, %B %d, %Y")`'
+output: 
+  html_document:
+    df_print: paged
+    fig_caption: true
+    highlights: pygments
+    number_sections: no
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+---
+
+## Completed
+16/16
+
+## Q1 MS 5.54 - pg 215
+```{r}
+data=read.csv("PHISHING.csv")
+```
+
+### a.
+
+$$P(x \geq 120)=e^{-120/95}$$
+```{r}
+cat("The probability:", exp(-120/95))
+```
+
+### b.
+```{r}
+mean=mean(data$INTTIME,na.rm=T)
+cat("The mean:", mean)
+var=var(data$INTTIME,na.rm=T)
+cat("The variance:", var)
+```
+
+With the mean is exactly 95, and the variance is very close to 95^2, this data appear to follow an exponential distribution with β=95
+
+## Q2 5.56 - Page 215
+```{r}
+a=3
+b=0.07
+```
+
+### a. 
+```{r}
+mean=a*b
+cat("The mean:", mean)
+var=a*b*b
+cat("The variance:", var)
+```
+
+### b. 
+```{r}
+lower = mean-3*sqrt(var)
+lower
+upper = mean+3*sqrt(var)
+upper
+```
+
+It is very unlikely for the value to be as high as .60 million cubic feet per second. Since three standard deviations account for about 99.7% and .60 is outside of 3 standard deviations
+
+## Q3 MS 5.60 - Page 216
+```{r}
+fA.a=2
+fA.b=2
+fB.a=1
+fB.b=4
+```
+
+### a. 
+```{r}
+meanA=fA.a*fA.b
+cat("The mean of Formula A:", meanA)
+meanB=fB.a*fB.b
+cat("The mean of Formula B:", meanB)
+```
+
+### b. 
+```{r}
+varA=fA.a*fA.b*fA.b
+cat("The variance of Formula A:", varA)
+varB=fB.a*fB.b*fB.b
+cat("The variance of Formula B:", varB)
+```
+
+### c. 
+```{r}
+cat("The P(Y<1) of Formula A:", pgamma(1,2,scale=2))
+cat("The P(Y<1) of Formula B:", pgamma(1,1,scale=4))
+```
+
+We can see that Formula B is more likely to trigger human reaction in less than 1 minute
+
+## Q4 5.74 - Page 219
+```{r}
+a=2
+b=4
+```
+
+### a. 
+```{r}
+cat("The P(Y<2):", pweibull(2,a,b^(1/a)))
+```
+
+### b. 
+```{r}
+mean = b^(1/a)*gamma((a+1)/a)
+cat("The mean:", mean)
+sd = sqrt(b^(2/a)*(gamma((a+2)/a)-(gamma((a+1)/a)^2)))
+cat("The sd:", sd)
+```
+### c. 
+```{r}
+lower=mean-2*sd
+cat("The lower:", lower)
+lower=mean+2*sd
+cat("The upper:", upper)
+```
+
+### d.
+It is very not likely that Y will exceed 6 years since 6 years time period is right around 2 standards deviation
+
+## Q5 MS 5.84 - Page 223
+```{r}
+a=2
+b=9
+```
+
+### a.
+```{r}
+mean = a/(a+b)
+cat("The mean:", mean)
+var = (a*b)/((a+b)^2*(a+b+1))
+cat("The variance:", var)
+```
+
+### b. 
+```{r}
+prob=1-pbeta(0.4,2,9)
+cat("The P(Y>0.4):", prob)
+```
+
+### c.
+```{r}
+prob=pbeta(0.1,2,9)
+cat("The P(Y<0.1):", prob)
+```
+
+## Q6 MS 5.114 - Page 232
+### a. 
+Looking at the formula giving by the book on page 217, we can see that a = 2 and b = 4
+```{r}
+a=2
+b=16
+```
+
+### b. 
+```{r}
+mean = b^(1/a)*gamma((a+1)/a)
+cat("The mean:", mean)
+var = b^(2/a)*(gamma((a+2)/a)-(gamma((a+1)/a)^2))
+cat("The variance:", var)
+```
+
+### c. 
+```{r}
+prob=1-pweibull(6,a,b^(1/a))
+cat("The P(Y>=6):", prob)
+```
+
+## Q7 MS 6.2 - Page 239
+### a.
+With 2 dices, there will be 36 possiple combination (6*6). Therefore, the probability of everything is equal to 1/36
+
+### b.
+p_1(x) = 1/6 (6 possible numbers)   
+p_2(y) = 1/6 (6 possible numbers)
+
+### c.
+$$p_1(x|y)=\frac{p(x,y)}{p_2(y)}=\frac{1/36}{1/6}=\frac{1}{6}$$
+The same goes for $p_2(y|x)$. The result is 1/6
+
+### d.
+The answers of b and c are the same. We can conclude that the two dices are independent
+
+
+## Q8 MS 6.4 - Page 240
+### a. 
+Counting the given table, we have
+
+<table width="50%">
+  <tr>
+    <th>Y/X</th>
+    <th>1</th>
+    <th>2</th>
+    <th>3</th>
+  </tr>
+  <tr>
+    <td>1<br></td>
+    <td>1/7</td>
+    <td>2/7</td>
+    <td>1/7</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>0</td>
+    <td>0</td>
+    <td>2/7</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>0</td>
+    <td>0</td>
+    <td>1/7</td>
+  </tr>
+</table>
+
+### b. 
+$P_1(X=1)=1/7+0+0=1/7$     
+$P_1(X=2)=2/7+0+0=2/7$     
+$P_1(X=3)=1/7+2/7+1/7=4/7$     
+
+<table width="50%">
+  <tr>
+    <td>y</td>
+    <td>1</td>
+    <td>2</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td>p1(x)</td>
+    <td>1/7</td>
+    <td>2/7</td>
+    <td>4/7</td>
+  </tr>
+</table>
+
+### c.
+$P_2(Y=1)=1/7+2/7+1/7=4/7$     
+$P_2(Y=2)=0+0+2/7=2/7$     
+$P_2(Y=3)=0+0+1/7=1/7$     
+
+<table width="50%">
+  <tr>
+    <td>x</td>
+    <td>1</td>
+    <td>2</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td>p2(y)</td>
+    <td>4/7</td>
+    <td>2/7</td>
+    <td>1/7</td>
+  </tr>
+</table>
+
+### d.
+$P_2(y|x) = \frac{P(x,y)}{P_1(X=x)}$   
+When X = 1   
+$P_2(1|1) = \frac{P(1,1)}{P_1(1)}=\frac{1/7}{1/7}=1$   
+$P_2(2|1) = \frac{P(2,1)}{P_1(1)}=\frac{0}{1/7}=0$  
+$P_2(3|1) = \frac{P(3,1)}{P_1(1)}=\frac{0}{1/7}=0$  
+When X = 2   
+$P_2(1|2) = \frac{P(1,2)}{P_1(2)}=\frac{2/7}{2/7}=1$   
+$P_2(2|2) = \frac{P(2,2)}{P_1(2)}=\frac{0}{2/7}=0$  
+$P_2(3|2) = \frac{P(3,2)}{P_1(2)}=\frac{0}{2/7}=0$  
+When X = 3   
+$P_2(1|3) = \frac{P(1,3)}{P_1(3)}=\frac{1/7}{4/7}=1/4$   
+$P_2(2|3) = \frac{P(2,3)}{P_1(3)}=\frac{2/7}{4/7}=1/2$     
+$P_2(3|3) = \frac{P(3,3)}{P_1(3)}=\frac{1/7}{4/7}=1/4$    
+
+## Q9 MS 6.12 - Page 244
+### a.
+$$f(y)=\int_y^{2y} \frac{e^{-y/10}}{10y}dx$$
+$$f(y)=\frac{e^{-y/10}}{10y}*|x|_y^{2y}$$
+$$f(y)=\frac{e^{-y/10}}{10y}*y$$
+$$f(y)=\frac{1}{10}*e^{-y/10}$$
+This is an exponetial distribution
+
+### b. 
+Since it is an exponential distribution,   
+We have the mean equal to $1/\lambda = \frac{1}{1/10} = 10$
+
+## Q10 MS 6.14 - Page 245
+### a.
+$$f(x,y)=\int_0^{inf}\int_0^{x} ce^{-x^2}dydx$$
+$$f(x,y)=\int_0^{inf} |yce^{-x^2}|_0^xdx$$
+$$f(x,y)=\int_0^{inf} xce^{-x^2}dx$$
+$$f(x,y)=c/2$$
+$$1=c/2$$
+$$c=2$$
+(The last intergral is calculated by a calculator)
+
+### b.
+$$f(x)=\int_0^{x} 2e^{-x^2}dy$$
+$$f(x)=2xe^{-x^2}$$
+$$f(x,y)=\int_{-inf}^{inf} f_1(x)dx$$
+$$f(x,y)=\int_{0}^{inf} 2xe^{-x^2}dx$$
+Let t = x^2, we have $dt=2xdx$   
+
+$$f(x,y)=\int_{0}^{inf} e^{-t}dt$$
+$$f(x,y)= |-e^{-x^2}|_0^{inf}$$
+As x go to infinitive, $-e^{-x^2}$ go to 0, we have   
+$$f(x,y)= 0-(-1)=1$$
+
+### c.
+$$f_2(y|x) = \frac{f(x,y)}{f_1(x)}$$
+$$f_2(y|x) = \frac{2e^{-x^2}}{2xe^{-x^2}}$$
+$$f_2(y|x) = \frac{1}{x}$$
+
+## Q11 MS 6.51 - Page 253
+E(XY)   
+$$E(XY)=\sum_x \sum_y xyp(x,y)$$
+$$E(XY)=(-1)*(-1)*1/12 + (-1)*0*2/12+ (-1)*1*1/12$$
+$$+0*(-1)*2/12 + 0*0*0+ 0*1*2/12$$
+$$+1*(-1)*1/12 + 1*0*2/12+ 1*1*1/12$$
+$$E(XY)= 1/12 - 1/12 -1/12 + 1/12 = 0$$
+E(X)   
+Looking at the table, We have $p_1(1)=1/3, p_1(2)=1/3, p_1(3)=1/3$    
+$$E(X)= \sum_x xp_1(x)$$
+$$E(X)= -1* 1/3 + 0*1/3+1*1/3 = 0$$
+The same will apply to E(Y), resulting E(Y)=0   
+Therefore, the conv is 0    
+But, P(x,y) not equal to p_1(x)*p_2(y) so X and Y are not independent
+
+## Q12 MS 6.74 - Page 269
+### a.
+```{r}
+a=1
+b=3
+n=60
+```
+
+Since this is a uniform distibution, we have $𝐸(𝑌\bar{Y}(a+b)/2 = (1+3)/2 = 2$  
+We expect 2 parts per milion
+
+### b.
+$Var(\bar{Y})=(b-a)^2/12$   
+```{r}
+mean=2
+var=(b-a)^2/12/n
+var
+```
+
+### c.
+As n get bigger, the central limit theorm will kick in. That is, the varibles become normal. The samplings distributed uniformly around the mean
+
+### d.
+$$Z=\frac{\bar{Y}-\mu}{\sigma}$$
+```{r}
+z1=(2.5-mean)/sqrt(var)
+z2=(1.5-mean)/sqrt(var)
+pnorm(z1)-pnorm(z2)
+```
+
+### e.
+```{r}
+z=(2.2-mean)/sqrt(var)
+1-pnorm(z)
+```
+
+## Q13. MS 6.90 - Page 273   
+X~Bin(20,0.4)
+```{r}
+n=20
+p=0.4
+q=1-p
+```
+
+### a.
+Fewer than 2 meaning less than eqaul to 1
+```{r}
+a=1 
+z1=((a+0.5)-n*p)/(sqrt(n*p*q))
+pnorm(z1)
+```
+
+### b.
+More than half meaning greater than equal to 11   
+```{r}
+a=11
+z2=((a-0.5)-n*p)/(sqrt(n*p*q))  
+1-pnorm(z2)
+```
+
+### c.
+```{r}
+pbinom(1,size=n,prob=p) 
+1-pbinom(10,size=n,prob=p)
+```
+The normal distributiont provide a good approximation to the binomial distribution as the results are very close
+
+## Q14 MS 7.108 - Page 362
+```{r}
+data=read.csv("LEADCOPP.csv")
+```
+For 99% interval, we have
+```{r}
+a=0.99
+```
+
+### a.
+```{r}
+t.test(data$LEAD,conf.level = a)
+```
+
+### b.
+```{r}
+t.test(data$COPPER,conf.level = a)
+```
+
+### c.
+On part a, we have 99% of data of lead lie within (-1.147845, 6.919045)   
+On part a, we have 99% of data of copper lie within (0.1518726, 0.6647274) 
+
+### d.
+It just mean that 99% of data lie in the interval
+
+## Q15 MS 7.114 - Page 364
+```{r}
+data = read.csv("SOLARAD.csv")
+with(data, t.test(STJOS, IOWA, paired=TRUE, conf.level = 0.95))
+```
+
+
+## Q16 MS 7.116 - Page 364
+```{r}
+data = read.csv("DIAZINON.csv")
+```
+
+### a.
+```{r}
+with(data, t.test(DAY, NIGHT, paired=TRUE, conf.level = 0.90))
+```
+
+### b.
+We are assuming the data is normally distributed
+
+### c.
+Since the mean of the different is not equal 0, this answer the researcher question. The mean diazinon residue levels differ from day to night.

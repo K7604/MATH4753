@@ -1,0 +1,192 @@
+---
+title: "Project 1"
+author: "Dr. Wayne Stewart"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    code_folding: show
+    csl: biomed-central.csl
+    df_print: paged
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    number_sections: yes
+    theme: journal
+    toc: yes
+    toc_float: yes
+  word_document:
+    toc: yes
+    toc_depth: '4'
+  pdf_document:
+    df_print: kable
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 7
+    highlight: tango
+    toc: yes
+    toc_depth: 4
+---
+ 
+# Abstract
+
+For NASA spacecrafts, line-by-line code checking for faulty is very time consuming and expensive. Given this problems, reseachers invent various analyzing algorithms in order to be more efficient in error checking. These algorithms' evaluation is based on line of code, cyclomatic complexity, essential complexity, and design complexity. It found out that the line of code algorithm would be the most preferable method. While all algorithms' precision is similar, line of code algorithm is the best with its detection rate. However, it's detection rate is only about 40%, in which would be a concern. A better algorithm will be needed.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction to the data
+
+## Data and variables(see MS pg. 77,125)   
+Given that every project has a finite budget, software enginerring often more focused on the critical part and leave out other parts, the "blind spots". The data in SWDEFECTS.csv describes if the specific module of code is defected (TRUE) or not (FALSE) using the 4 predictions (the last 4 columns) and some calculation:   
++ Line of code:  $LOC > 50$ (LOC = Line of code)   
++ Cyclomatic complexity: $v(g) > 10$ (v(g) = number of linearly independent paths)   
++ Essential complexity: $ev(g) \geq 14.5$ (ev(g) = number of subflow graphs with D-structured primes)   
++ Design complexity: $iv(g) \geq 9.2$ (iv(g) = cyclomatic complexity of module’s reduced flow graph)   
+
+## Summary Table    
+<table style=" width: 100%; text-align:center">
+  <tr>
+    <th> </th>
+    <th> </th>
+    <th>FALSE</th>
+    <th>TRUE</th>
+  </tr>
+  <tr>
+    <td>Algorithm</td>
+    <td>No</td>
+    <td>a</td>
+    <td>b</td>
+  </tr>
+  <tr>
+    <td>Predicts</td>
+    <td>Yes</td>
+    <td>c</td>
+    <td>d</td>
+  </tr>
+  <tr>
+    <td>Defects</td>
+  </tr>
+</table>
+
+1. Accuracy
+$$P(Algorithm \ is \ correct) = \frac{a+d}{a+b+c+d}$$
+2. Detection rate
+$$P(Predict \ defect \ | \ module \ has \ defect) = \frac{d}{b+d}$$
+3. False alarm rate
+$$P(Predict \ defect \ | \ module \ has \ no \ defect) = \frac{c}{a+c}$$
+4. Precision
+$$P(Predict \ has\ defect \ | \ predict \ defect) = \frac{c}{c+d}$$
+
+# R functions
+```{r accuracy}
+acc=function(a,b,c,d){
+  round((a+d)/(a+b+c+d),3)
+}
+```
+
+```{r detecton}
+detect=function(b,d){
+  round(d/(b+d),3)
+}
+```
+
+```{r alarm}
+falarm=function(a,c){
+  round(c/(a+c),3)
+}
+```
+
+```{r precision}
+prec=function(c,d){
+  round(d/(c+d),3)
+}
+```
+
+
+# Create the tables in Figure SIA3.1
+```{r}
+swd=read.csv("SWDEFECTS.csv")
+#PRED_LOC
+tabLOC=with(swd, table(predict.loc.50,defect))
+barplot(tabLOC,beside = TRUE, leg =TRUE)
+tabLOC=addmargins(tabLOC)
+tabLOC
+#PRED_VG
+tabVG=with(swd, table(predict.vg.10,defect))
+barplot(tabVG,beside = TRUE, leg =TRUE)
+tabVG=addmargins(tabVG)
+tabVG
+#PRED_EVG
+tabEVG=with(swd, table(predict.evg.14.5,defect))
+barplot(tabEVG,beside = TRUE, leg =TRUE)
+tabEVG=addmargins(tabEVG)
+tabEVG
+#PRED_IVG
+tabIVG=with(swd, table(predict.ivg.9.2,defect))
+barplot(tabIVG,beside = TRUE, leg =TRUE)
+tabIVG=addmargins(tabIVG)
+tabIVG
+```
+
+# Create the corrected table on page 127
+```{r}
+#LOC row
+a=tabLOC[1,1]
+b=tabLOC[1,2]
+c=tabLOC[2,1]
+d=tabLOC[2,2]
+LOCacc=acc(a,b,c,d)
+LOCdetect=detect(b,d)
+LOCfalarm=falarm(a,c)
+LOCprec=prec(c,d)
+#VG row
+a=tabVG[1,1]
+b=tabVG[1,2]
+c=tabVG[2,1]
+d=tabVG[2,2]
+VGacc=acc(a,b,c,d)
+VGdetect=detect(b,d)
+VGfalarm=falarm(a,c)
+VGprec=prec(c,d)
+#EVG row
+a=tabEVG[1,1]
+b=tabEVG[1,2]
+c=tabEVG[2,1]
+d=tabEVG[2,2]
+EVGacc=acc(a,b,c,d)
+EVGdetect=detect(b,d)
+EVGfalarm=falarm(a,c)
+EVGprec=prec(c,d)
+#IVG row
+a=tabIVG[1,1]
+b=tabIVG[1,2]
+c=tabIVG[2,1]
+d=tabIVG[2,2]
+IVGacc=acc(a,b,c,d)
+IVGdetect=detect(b,d)
+IVGfalarm=falarm(a,c)
+IVGprec=prec(c,d)
+
+tab3<-matrix(c(LOCacc,LOCdetect,LOCfalarm,LOCprec,
+               VGacc,VGdetect,VGfalarm,VGprec,
+               EVGacc,EVGdetect,EVGfalarm,EVGprec,
+               IVGacc,IVGdetect,IVGfalarm,IVGprec),
+               ncol=4,byrow=TRUE)
+colnames(tab3)=c("Accuracy","Dectection Rate","False Alarm Rate","Precision")
+rownames(tab3)=c("Line of code","Cyclomatic complexity","Essential Complexity","Design Complexity")
+tab3 = as.table(tab3)
+tab3
+```
+
+# mybar() function
+```{r}
+mybar=function(tab,acc){
+  barplot(tab,beside=TRUE,col=rainbow(4),legend = rownames(tab))
+}
+mybar(tab3)
+```
+    
+  
+
